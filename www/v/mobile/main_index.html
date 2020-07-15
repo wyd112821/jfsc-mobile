@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0">
+    <title>积分集市-首页</title>
+    <link rel="stylesheet" href="/jfmobile/vant/index.css" />
+    <link rel="stylesheet" href="/jfmobile/css/normalize.css">
+    <link rel="stylesheet" href="/jfmobile/css/global.css">
+    <link rel="stylesheet" href="/jfmobile/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/jfmobile/css/main_index.css">
+    <script src="/jfmobile/js/vue.min.js"></script>
+    <script src="/jfmobile/vant/vant.min.js"></script>
+    <script src="/jfmobile/js/jquery.js"></script>
+    <script src="/jfmobile/js/flexible.js"></script>
+</head>
+
+<body>
+    <div id="app" class="layout-default" style="display: none;" :style="{display: 'block'}">
+        <div class="layout-main">
+            <div class="m-header">
+                <div class="logo">
+                    <img src="/jfmobile/images/logo.png" alt="聚名">
+                </div>
+                <div class="top-icons">
+                    <a href=""><i class="iconfont icontubiao_huaban1"></i></a>
+                    <a href=""><i class="iconfont icontubiao-02"></i></a>
+                </div>
+            </div>
+
+            <van-swipe class="swipe-section" :autoplay="3000">
+                <van-swipe-item v-for="(image, index) in images" :key="index">
+                    <img :src="image" />
+                </van-swipe-item>
+            </van-swipe>
+
+            <van-grid class="navs-wrapper" square :border="false">
+                <van-grid-item v-for="(item, idx) in navs" :key="idx" :icon="item.icon" :text="item.text"
+                    :url="item.path" />
+            </van-grid>
+
+            <van-notice-bar class="notice-wrapper" :left-icon="noticeTitle" :scrollable="false">
+                <van-swipe vertical class="notice-swipe" :autoplay="3000" :show-indicators="false">
+                    <van-swipe-item v-for="item in notices" :key="item.id">
+                        <a :href="'/news/' + item.id + '.html'">{{ item.title }}</a>
+                    </van-swipe-item>
+                </van-swipe>
+            </van-notice-bar>
+
+            <div class="choiceness-commodity">
+                <div class="commodity-panel">
+                    <div class="rqjx-panel panel">
+                        <div class="title">
+                            <h2>人气精选</h2>
+                            <span class="subhead">品质好物</span>
+                        </div>
+                        <van-grid class="commodity-list" :border="false" :column-num="2">
+                            <van-grid-item v-for="item in rqjxList" :key="item.id">
+                                <nuxt-link :to="item.id">
+                                    <van-image lazy-load :src="item.img" />
+                                </nuxt-link>
+                            </van-grid-item>
+                        </van-grid>
+                    </div>
+                    <div class="zxsj-panel panel">
+                        <div class="title">
+                            <h2>最新上架</h2>
+                            <span class="subhead">NEW</span>
+                        </div>
+                        <van-grid class="commodity-list" :border="false" :column-num="2">
+                            <van-grid-item v-for="item in zxsjList" :key="item.id">
+                                <nuxt-link :to="item.id">
+                                    <van-image lazy-load :src="item.img" />
+                                </nuxt-link>
+                            </van-grid-item>
+                        </van-grid>
+                    </div>
+                </div>
+                <div class="dfsp-panel panel">
+                    <div class="title">
+                        <h2>低分商品</h2>
+                        <span class="subhead">1积分抢1000聚查点</span>
+                    </div>
+                    <van-grid class="commodity-list" :border="false" :column-num="4">
+                        <van-grid-item v-for="item in dfspList" :key="item.id">
+                            <nuxt-link :to="item.id">
+                                <van-image lazy-load :src="item.img" />
+                            </nuxt-link>
+                        </van-grid-item>
+                    </van-grid>
+                </div>
+                <van-notice-bar class="dhdt-panel" :left-icon="dhdtTitle" :scrollable="false">
+                    <van-swipe vertical class="dhdt-swipe" :autoplay="3000" :show-indicators="false">
+                        <van-swipe-item v-for="item in dhdt" :key="item.id">
+                            <nuxt-link :to="item.id">{{ item.mc }}</nuxt-link>
+                        </van-swipe-item>
+                    </van-swipe>
+                </van-notice-bar>
+            </div>
+        </div>
+        <div class="layout-menu-bar">
+            <van-tabbar v-model="menuActive" class="menu-bar" ref="menuBar">
+                <van-tabbar-item name="index" url="/">
+                    <span>首页</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-06"></i>
+                    </template>
+                </van-tabbar-item>
+                <van-tabbar-item name="classify" url="/classify">
+                    <span>分类</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-05"></i>
+                    </template>
+                </van-tabbar-item>
+                <van-tabbar-item name="cart" url="/cart">
+                    <span>购物车</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-07"></i>
+                    </template>
+                </van-tabbar-item>
+                <van-tabbar-item name="user" url="/user">
+                    <span>我的</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-08"></i>
+                    </template>
+                </van-tabbar-item>
+            </van-tabbar>
+        </div>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    images: [
+                        "http://5b0ac94f2e8b013556eeb5a93229e674.jfdl.juming.com:8668/jf/images/banner.png",
+                        "http://5b0ac94f2e8b013556eeb5a93229e674.jfdl.juming.com:8668/jf/images/banner.jpg"
+                    ],
+                    navs: [{
+                            text: "本站产品",
+                            icon: "/jfmobile/images/bzcp-icon.png",
+                            path: "/goods?flid=1"
+                        },
+                        {
+                            text: "虚拟卡币",
+                            icon: "/jfmobile/images/xnkb-icon.png",
+                            path: "/goods?flid=2"
+                        },
+                        {
+                            text: "商品百货",
+                            icon: "/jfmobile/images/spbh-icon.png",
+                            path: "/goods?flid=3"
+                        },
+                        {
+                            text: "吃喝玩乐",
+                            icon: "/jfmobile/images/chwl-icon.png",
+                            path: "/goods?flid=4"
+                        },
+                        {
+                            text: "商品分类",
+                            icon: "/jfmobile/images/spfl-icon.png",
+                            path: "/goods"
+                        },
+                        {
+                            text: "我能兑换",
+                            icon: "/jfmobile/images/wndh-icon.png",
+                            path: "/user_jf/my_dhlist"
+                        },
+                        {
+                            text: "热门商品",
+                            icon: "/jfmobile/images/rmsp-icon.png",
+                            path: "/hot"
+                        },
+                        {
+                            text: "低分商品",
+                            icon: "/jfmobile/images/dfsp-icon.png",
+                            path: ""
+                        }
+                    ],
+                    menuActive: "index",
+                    noticeTitle: "/jfmobile/images/notice-title.png",
+                    notices: [{
+                            id: "1",
+                            title: "特惠商品上架"
+                        },
+                        {
+                            id: "2",
+                            title: "关于积分商城改版上线的通知"
+                        },
+                        {
+                            id: "3",
+                            title: "关于端午礼盒发放问题"
+                        }
+                    ],
+                    rqjxList: [],
+                    zxsjList: [],
+                    dfspList: [],
+                    dhdtTitle: "/jfmobile/images/dhdt-title.png",
+                    dhdt: []
+                };
+            }
+        })
+    </script>
+</body>
+
+</html>

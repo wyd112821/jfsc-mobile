@@ -1,0 +1,195 @@
+.layout-main {
+    padding: 0 0.3rem;
+}
+
+.m-header {
+    display: flex;
+    padding: 0.3rem 0;
+}
+
+.m-header .logo {
+    flex: 0 0 2.92rem;
+}
+
+.m-header .logo img {
+    width: 100%;
+}
+
+.m-header .top-icons {
+    flex: 1;
+    text-align: right;
+}
+
+.m-header .top-icons .iconfont {
+    padding: 0 0.12rem;
+    font-size: 0.38rem;
+    color: #b1b1b1;
+}
+
+.swipe-section {
+    width: 6.9rem;
+    height: 3.6rem;
+    overflow: hidden;
+    border-radius: 0.18rem;
+}
+
+.swipe-section .van-swipe-item {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.swipe-section .van-swipe-item img {
+    position: absolute;
+    left: 50%;
+    height: 100%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+
+.swipe-section .van-swipe__indicators {
+    bottom: 0.3rem;
+}
+
+.swipe-section .van-swipe__indicators .van-swipe__indicator {
+    width: 0.12rem;
+    height: 0.12rem;
+}
+
+.swipe-section .van-swipe__indicators .van-swipe__indicator--active {
+    width: 0.32rem;
+    background-color: #fff;
+    border-radius: o.18rem;
+}
+
+.navs-wrapper {
+    background-color: #fff;
+    border-radius: 0.1rem;
+    margin: 0.2rem 0;
+    padding: 0.3rem 0;
+    overflow: hidden;
+}
+
+.navs-wrapper .van-grid-item__content {
+    padding: 0;
+}
+
+.navs-wrapper .van-grid-item__content .van-grid-item__icon {
+    font-size: 0.92rem;
+}
+
+.navs-wrapper .van-grid-item__content .van-grid-item__text {
+    font-size: 0.24rem;
+    color: #666;
+    margin-top: 0.2rem
+}
+
+.notice-wrapper {
+    height: 0.88rem;
+    background-color: #fff;
+    border-radius: 0.1rem;
+    padding: 0 0.24rem;
+}
+
+.notice-wrapper .van-notice-bar__left-icon {
+    min-width: 1.95rem;
+    font-size: 0.28rem;
+}
+
+.notice-wrapper .van-notice-bar__left-icon .van-icon__image {
+    width: auto;
+}
+
+.notice-wrapper .notice-swipe {
+    height: 0.6rem;
+    line-height: 0.6rem;
+    font-size: 0.26rem;
+}
+
+.notice-wrapper .notice-swipe a {
+    color: #222 !important;
+}
+
+.choiceness-commodity {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 0.1;
+    margin: 0.2rem 0;
+    overflow: hidden;
+}
+
+.choiceness-commodity .panel {
+    flex: 1;
+}
+
+.choiceness-commodity .panel .title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.choiceness-commodity .title h2 {
+    margin: 0 0.18rem 0 0;
+    font-size: 0.3rem;
+    color: #222;
+}
+
+.choiceness-commodity .title span.subhead {
+    padding: 0.05rem 0.11rem;
+    background: linear-gradient(270deg, rgba(234, 58, 45, 1) 0%, rgba(236, 104, 93, 1) 100%);
+    border-radius: 0.05rem;
+    color: #fff;
+    font-size: 0.2rem;
+    line-height: 1;
+}
+
+.choiceness-commodity .commodity-list {
+    height: 1.8rem;
+}
+
+.choiceness-commodity .commodity-list a {
+    width: 100%;
+}
+
+.commodity-list .van-image {
+    width: 100%;
+    height: 1.80rem;
+    overflow: hidden;
+}
+
+.commodity-list .van-image .van-image__img {
+    position: absolute;
+    top: 50%;
+    height: auto;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.choiceness-commodity .commodity-panel {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.3rem 0.24rem;
+}
+
+.zxsj-panel span.subhead {
+    background: linear-gradient(270deg, rgba(27, 162, 255, 1) 0%, rgba(29, 181, 255, 1) 100%);
+    border-radius: 0.14rem;
+}
+
+.dfsp-panel {
+    padding: 0.1rem 0.24rem;
+}
+
+.dfsp-panel .commodity-list {
+    height: 1.6rem;
+}
+    
+.commodity-list a .van-image {
+    height: 1rem;
+    border: 0.01rem solid #eee;
+    box-sizing: border-box;
+    border-radius: 0.1rem;
+  }
