@@ -60,7 +60,7 @@
 .swipe-section .van-swipe__indicators .van-swipe__indicator--active {
     width: 0.32rem;
     background-color: #fff;
-    border-radius: o.18rem;
+    border-radius: 0.18rem;
 }
 
 .navs-wrapper {
@@ -115,7 +115,7 @@
     display: flex;
     flex-direction: column;
     background-color: #fff;
-    border-radius: 0.1;
+    border-radius: 0.1rem;
     margin: 0.2rem 0;
     overflow: hidden;
 }
@@ -153,7 +153,11 @@
     width: 100%;
 }
 
-.commodity-list .van-image {
+.commodity-list .van-grid-item__content {
+    padding: 0.04rem 0.08rem;
+}
+
+.commodity-list a .van-image {
     width: 100%;
     height: 1.80rem;
     overflow: hidden;
@@ -171,7 +175,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 0.3rem 0.24rem;
+    padding: 0.3rem 0.24rem 0.1rem;
 }
 
 .zxsj-panel span.subhead {
@@ -186,10 +190,129 @@
 .dfsp-panel .commodity-list {
     height: 1.6rem;
 }
-    
-.commodity-list a .van-image {
+
+.dfsp-panel .commodity-list a .van-image {
     height: 1rem;
-    border: 0.01rem solid #eee;
+    border: 1px solid #eee;
     box-sizing: border-box;
     border-radius: 0.1rem;
-  }
+}
+
+.dhdt-panel {
+    padding: 0.30rem 0.24rem;
+    border-top: 1px solid #F5F5F5;
+    height: 0.30rem;
+    background-color: #fff;
+}
+
+.dhdt-panel .van-notice-bar__left-icon {
+    min-width: 1.50rem;
+    font-size: 0.28rem;
+}
+
+.dhdt-panel .van-notice-bar__left-icon .van-icon__image {
+    width: auto;
+}
+
+.dhdt-panel .dhdt-swipe {
+    height: 0.4rem;
+    line-height: 0.4rem;
+    font-size: 0.26rem;
+}
+
+.dhdt-panel .dhdt-swipe a {
+    color: #222 !important;
+}
+
+.jftabs-wrapper {
+    padding: 0.15rem 0 0.6rem;
+}
+
+.jftabs-wrapper .van-tabs__wrap {
+    height: 1.1rem;
+}
+
+.jftabs-wrapper .van-tabs__wrap .van-tabs__nav {
+    background-color: transparent;
+    text-align: center;
+}
+
+.jftabs-wrapper .van-tabs__wrap .van-tabs__nav .m-tit {
+    margin: 0 0 0.13rem;
+    font-size: 0.28rem;
+    color: #222;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.jftabs-wrapper .van-tabs__wrap .van-tabs__nav .m-desc {
+    margin: 0;
+    font-size: 0.22rem;
+    color: #999;
+}
+
+.jftabs-wrapper .van-tabs__nav .van-tab--active .m-tit {
+    font-size: 0.32rem;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.jftabs-wrapper .van-tabs__nav .van-tab--active .m-desc {
+    color: #EA3B2E;
+}
+
+.jftabs-wrapper .van-tabs__nav .van-tabs__line {
+    width: 0.4rem !important;
+    height: 0.56rem;
+    border-radius: 50%;
+    border: solid 0.06rem #EA3B2E;
+    background-color: transparent;
+    border-right: solid 0.06rem rgba(223, 223, 194, 0);
+    border-left: solid 0.06rem rgba(223, 223, 194, 0);
+    border-top: solid 0.06rem rgba(223, 223, 194, 0);
+    -webkit-transform: translate(-50%, -50%) rotate(180deg);
+    transform: translate(-50%, -50%) rotate(180deg);
+    -webkit-animation: mouthAnimation 3s infinite cubic-bezier(0.455, 0.03, 0.515, 0.955);
+    animation: mouthAnimation 3s infinite cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+.jftabs-wrapper .more-btn {
+    margin: 0;
+    text-align: center;
+    font-size: 0.3rem;
+}
+
+.jftabs-wrapper .more-btn a {
+    color: #999;
+}
+
+.index-footer {
+    width: 7.5rem;
+    box-sizing: border-box;
+    margin-left: -0.3rem;
+    margin-bottom: 0.99rem;
+    background-color: #fff;
+    padding: 0 0.3rem;
+    text-align: center;
+}
+
+.index-footer .footer-nav {
+    width: 100%;
+    display: flex;
+    border-bottom: 1px solid #eee;
+}
+
+.index-footer .footer-nav a {
+    flex: 1;
+    padding: 0.36rem 0;
+    font-size: 0.26rem;
+    color: #666;
+}
+
+.index-footer .footer-copyright {
+    margin: 0;
+    padding: 0.38rem 0.4rem;
+    font-size: 0.24rem;
+    color: #aaa;
+    line-height: 0.38rem;
+}

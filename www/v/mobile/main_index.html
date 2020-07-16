@@ -57,9 +57,11 @@
                         </div>
                         <van-grid class="commodity-list" :border="false" :column-num="2">
                             <van-grid-item v-for="item in rqjxList" :key="item.id">
-                                <nuxt-link :to="item.id">
-                                    <van-image lazy-load :src="item.img" />
-                                </nuxt-link>
+                                <a :href="'/main/detail?id=' + item.id">
+                                    <div class="van-image">
+                                        <img :src="item.img" class="van-image__img">
+                                    </div>
+                                </a>
                             </van-grid-item>
                         </van-grid>
                     </div>
@@ -70,9 +72,11 @@
                         </div>
                         <van-grid class="commodity-list" :border="false" :column-num="2">
                             <van-grid-item v-for="item in zxsjList" :key="item.id">
-                                <nuxt-link :to="item.id">
-                                    <van-image lazy-load :src="item.img" />
-                                </nuxt-link>
+                                <a :href="'/main/detail?id=' + item.id">
+                                    <div class="van-image">
+                                        <img :src="item.img" class="van-image__img">
+                                    </div>
+                                </a>
                             </van-grid-item>
                         </van-grid>
                     </div>
@@ -84,20 +88,58 @@
                     </div>
                     <van-grid class="commodity-list" :border="false" :column-num="4">
                         <van-grid-item v-for="item in dfspList" :key="item.id">
-                            <nuxt-link :to="item.id">
-                                <van-image lazy-load :src="item.img" />
-                            </nuxt-link>
+                            <a :href="'/main/detail?id=' + item.id">
+                                <div class="van-image">
+                                    <img :src="item.img" class="van-image__img">
+                                </div>
+                            </a>
                         </van-grid-item>
                     </van-grid>
                 </div>
                 <van-notice-bar class="dhdt-panel" :left-icon="dhdtTitle" :scrollable="false">
                     <van-swipe vertical class="dhdt-swipe" :autoplay="3000" :show-indicators="false">
                         <van-swipe-item v-for="item in dhdt" :key="item.id">
-                            <nuxt-link :to="item.id">{{ item.mc }}</nuxt-link>
+                            <a href="javascript:;">{{ item.mc }}</a>
                         </van-swipe-item>
                     </van-swipe>
                 </van-notice-bar>
             </div>
+
+            <van-tabs class="jftabs-wrapper" v-model="active" swipeable>
+                <van-tab v-for="(item, idx) in flsp" :key="idx">
+                    <template #title>
+                        <h3 class="m-tit">{{ item.name }}</h3>
+                        <p class="m-desc">{{ item.desc }}</p>
+                    </template>
+
+                    <div class="jftabs-content">
+                        <div class="flsp-list">
+                            <a :href="'/main/detail?id=' + item.id" class="flsp-item" v-for="item in item.list"
+                                :key="item.id">
+                                <div class="img">
+                                    <img :src="item.img">
+                                </div>
+                                <div class="mc multiline-ellipsis2">{{ item.mc }}</div>
+                                <div class="dhjf">{{ item.dhjf }}积分+0元</div>
+                                <div class="nums">{{ item.dhrs }}人已兑换</div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <p class="more-btn">
+                        <a :href="'/main/goods?flid=' + item.id">点击查看更多</a>
+                    </p>
+                </van-tab>
+            </van-tabs>
+
+            <footer class="index-footer">
+                <div class="footer-nav">
+                    <a href="/">积分问题</a>
+                    <a href="/">商品问题</a>
+                    <a href="/">关于集市</a>
+                </div>
+                <p class="footer-copyright">Copyright © 2008-2028 [聚名网] Juming INC, All Rights Reserved</p>
+            </footer>
         </div>
         <div class="layout-menu-bar">
             <van-tabbar v-model="menuActive" class="menu-bar" ref="menuBar">
@@ -180,25 +222,77 @@
                     ],
                     menuActive: "index",
                     noticeTitle: "/jfmobile/images/notice-title.png",
-                    notices: [{
-                            id: "1",
-                            title: "特惠商品上架"
-                        },
-                        {
-                            id: "2",
-                            title: "关于积分商城改版上线的通知"
-                        },
-                        {
-                            id: "3",
-                            title: "关于端午礼盒发放问题"
-                        }
-                    ],
+                    notices: [],
                     rqjxList: [],
                     zxsjList: [],
                     dfspList: [],
                     dhdtTitle: "/jfmobile/images/dhdt-title.png",
-                    dhdt: []
+                    dhdt: [],
+                    active: 0,
+                    flsp: []
                 };
+            },
+            mounted() {
+                var self = this;
+                $.ajax({
+                    type: "get",
+                    url: 'http://192.168.1.182/',
+                    data: {
+                        request_data: 1
+                    },
+                    dataType: "jsonp",
+                    success: function (res) {
+                        let {
+                            code,
+                            data: {
+                                news,
+                                rqsp,
+                                zxsp,
+                                dfsp,
+                                dhdt,
+                                fllist,
+                                flsp
+                            }
+                        } = res
+
+                        if (code === 1) {
+                            self.notices = news
+                            self.rqjxList = rqsp.slice(0, 2)
+                            self.zxsjList = zxsp.slice(0, 2)
+                            self.dfspList = dfsp.slice(0, 5)
+                            self.dhdt = dhdt
+                            self.flsp = Object.values(fllist)
+                                .slice(0, 4)
+                                .map((item, index) => {
+                                    return {
+                                        id: item.id,
+                                        name: item.mc.substr(0, 4),
+                                        desc: item.ms,
+                                        list: flsp[index + 1]
+                                    };
+                                })
+                        }
+                    }
+                })
+
+                // $.ajax({
+                //     type: "get",
+                //     url: "http://192.168.1.182/user_jf/order",
+                //     data: {
+                //         request_data: 1,
+                //         ids: "152",
+                //         num: 1,
+                //         free: 0,
+                //         sxmc: ""
+                //     },
+                //     dataType: "jsonp",
+                //     success: function (data) {
+                //         console.log(data)
+                //     },
+                //     error: function () {
+                //         alert('fail');
+                //     }
+                // });
             }
         })
     </script>
