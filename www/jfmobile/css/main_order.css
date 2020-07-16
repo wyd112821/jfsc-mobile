@@ -1,0 +1,95 @@
+.exchange-cell {
+    line-height: 0.4rem;
+    font-size: 0.3rem;
+    padding: 0.42rem 0.3rem;
+    border-radius: 0px 0px 0.2rem 0.2rem;
+}
+
+.exchange-cell .van-icon {
+    height: 0.4rem;
+    font-size: 0.36rem;
+    line-height: 0.4rem;
+}
+
+.exchange-cell .van-icon.van-cell__left-icon {
+    margin-right: 0.16rem;
+    color: #FF4C4B;
+}
+
+.exchange-cell .exchange-name {
+    padding-right: 0.42rem;
+}
+
+.exchange-cell .exchange-tel {
+    padding-right: 0.1rem;
+}
+
+.exchange-cell .van-tag {
+    padding: 0.04rem 0.14rem;
+    border-radius: 0.18rem;
+    font-size: 0.2rem;
+}
+
+.exchange-cell .van-cell__label {
+    margin-top: 0.2rem;
+    line-height: 0.36rem;
+    font-size: 0.26rem;
+    color: #999;
+}
+
+.gift-list {
+    margin: 0.2rem 0 1.48rem;
+    padding: 0.3rem;
+    background-color: #fff;
+    border-radius: 0.2rem;
+}
+
+.gift-list .title {
+    margin: 0 0 0.3rem;
+    padding: 0 0.06rem, ;
+    font-size: 0. 3rem;
+    font-weight: normal;
+    color: #000;
+}
+
+.gift-list .title .iconfont {
+    margin-right: 0.16rem;
+    font-size: 0.3rem;
+    color: #FF4C4B;
+}
+
+.gift-list .list-info {
+    display: flex;
+}
+
+.gift-list .list-info .img {
+    flex: 0 0 1.8rem;
+    box-sizing: border-box;
+    border-radius: 0.1rem;
+    border: 1px solid #E6E6E6;
+    overflow: hidden;
+    font-size: 0;
+}
+
+.gift-list .list-info .img img {
+    width: 100%;
+}
+
+.gift-list .list-info .info {
+    flex: 1;
+    padding-left: 0.24rem;
+    font-size: 0.28rem;
+    line-height: 0.36rem;
+}
+
+.gift-list .list-info .info h3 {
+    padding: 0.1rem 0 0.2rem;
+    color: #222;
+    font-weight: normal;
+    margin: 0;
+}
+
+.gift-list .list-info .info p {
+    margin: 0;
+    color: #999;
+}

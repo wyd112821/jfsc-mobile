@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0">
+    <title>积分集市-商品分类</title>
+    <link rel="stylesheet" href="/jfmobile/vant/index.css" />
+    <link rel="stylesheet" href="/jfmobile/css/normalize.css">
+    <link rel="stylesheet" href="/jfmobile/css/global.css">
+    <link rel="stylesheet" href="/jfmobile/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/jfmobile/css/main_goods.css">
+
+    <script src="/jfmobile/js/flexible.js"></script>
+</head>
+
+<body>
+    <div id="app" class="layout-default" style="display: none;" :style="{display: 'block'}">
+        <div>
+            <van-nav-bar class="nav-bar-default" :title="title" left-arrow @click-left="onClickLeft" ref="navBar" />
+        </div>
+
+        <div>
+            <van-tree-select :height="height" :items="items" :main-active-index.sync="active" class="spfl-wrapper"
+                @click-nav="clickNav">
+                <template #content>
+                    <div class="spbq-box" v-for="(item, idx) in tags" :key="idx" v-show="active === idx" ref="spbqBox">
+                        <h3>商品标签</h3>
+                        <div class="tags-content">
+                            <ul>
+                                <li v-for="(tag, idx) in item" :key="idx">
+                                    <a :href="'/goods?flid=' + tag.flid + '&bq=' + tag.mc">{{ tag.mc }}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </template>
+            </van-tree-select>
+        </div>
+
+
+        <div class="layout-menu-bar">
+            <van-tabbar v-model="menuActive" class="menu-bar" ref="menuBar">
+                <van-tabbar-item name="index" url="/">
+                    <span>首页</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-06"></i>
+                    </template>
+                </van-tabbar-item>
+                <van-tabbar-item name="goods" url="/goods">
+                    <span>分类</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-05"></i>
+                    </template>
+                </van-tabbar-item>
+                <van-tabbar-item name="cart" url="/user_jf/cart">
+                    <span>购物车</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-07"></i>
+                    </template>
+                </van-tabbar-item>
+                <van-tabbar-item name="user_jf" url="/user_jf">
+                    <span>我的</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-08"></i>
+                    </template>
+                </van-tabbar-item>
+            </van-tabbar>
+        </div>
+    </div>
+
+    <script src="/jfmobile/js/vue.min.js"></script>
+    <script src="/jfmobile/vant/vant.min.js"></script>
+    <script src="/jfmobile/js/jquery.js"></script>
+    <script src="/jfmobile/js/utils.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    menuActive: "goods",
+                    title: '商品分类',
+                    height: 700,
+                    active: 0,
+                    items: [],
+                    tags: []
+                }
+            },
+            methods: {
+                //返回上一页
+                onClickLeft() {
+                    window.history.go(-1);
+                },
+                //点击treeSelect右侧内容回到顶部
+                clickNav: function () {
+                    const spbqWrap = document.querySelector(
+                        ".van-tree-select__content"
+                    );
+                    let scrollTop = spbqWrap.scrollTop;
+                    if (scrollTop > 0) {
+                        spbqWrap.scrollTop = 0;
+                    }
+                },
+                //动态计算treeSelect高度
+                treeSelectH: function () {
+                    let h =
+                        window.innerHeight ||
+                        document.documentElement.clientHeight ||
+                        document.body.clientHeight; //浏览器高度
+                    let navBarH = this.$refs["navBar"].$el.offsetHeight; //navBar高度
+                    this.height = h - navBarH;
+                }
+            },
+            created() {
+                var self = this;
+                //商品分类
+                $.ajax({
+                    type: "get",
+                    url: ajaxBaseUrl + 'main/flList',
+                    data: {
+                        request_data: 1
+                    },
+                    dataType: "jsonp",
+                    success: function (res) {
+                        if (res.code === 1) {
+                            let {
+                                data: items
+                            } = res
+                            let all = {
+                                text: "全部",
+                                id: "0"
+                            };
+                            let classics = Object.values(items).map(item => {
+                                return {
+                                    text: item.mc.substr(0, 4),
+                                    id: item.id
+                                };
+                            });
+                            classics.splice(0, 0, all);
+                            self.items = classics
+                        }
+                    }
+                })
+
+                //商品标签
+                $.ajax({
+                    type: "get",
+                    url: ajaxBaseUrl + 'main/bqList',
+                    data: {
+                        request_data: 1
+                    },
+                    dataType: "jsonp",
+                    success: function (res) {
+                        if (res.code === 1) {
+                            let {
+                                data: tags
+                            } = res
+                            let tagsValue = Object.values(tags);
+                            let tagsArray = [];
+                            for (const tag of tagsValue) {
+                                let tagsObject = Object.values(tag);
+                                tagsArray.push(tagsObject);
+                            }
+                            self.tags = tagsArray
+                        }
+                    }
+                })
+            },
+            mounted() {
+                this.treeSelectH();
+
+                //初始化当前选中分类
+                let flid = getUrlParam().flid
+                if (flid) {
+                    this.active = parseInt(flid);
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

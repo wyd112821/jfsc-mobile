@@ -10,9 +10,6 @@
     <link rel="stylesheet" href="/jfmobile/css/global.css">
     <link rel="stylesheet" href="/jfmobile/iconfont/iconfont.css">
     <link rel="stylesheet" href="/jfmobile/css/main_index.css">
-    <script src="/jfmobile/js/vue.min.js"></script>
-    <script src="/jfmobile/vant/vant.min.js"></script>
-    <script src="/jfmobile/js/jquery.js"></script>
     <script src="/jfmobile/js/flexible.js"></script>
 </head>
 
@@ -120,7 +117,7 @@
                                     <img :src="item.img">
                                 </div>
                                 <div class="mc multiline-ellipsis2">{{ item.mc }}</div>
-                                <div class="dhjf">{{ item.dhjf }}积分+0元</div>
+                                <div class="dhjf">{{ item.dhjf }}积分+{{ item.dhjg }}元</div>
                                 <div class="nums">{{ item.dhrs }}人已兑换</div>
                             </a>
                         </div>
@@ -149,19 +146,19 @@
                         <i class="iconfont icontubiao-06"></i>
                     </template>
                 </van-tabbar-item>
-                <van-tabbar-item name="classify" url="/classify">
+                <van-tabbar-item name="goods" url="/goods">
                     <span>分类</span>
                     <template #icon="props">
                         <i class="iconfont icontubiao-05"></i>
                     </template>
                 </van-tabbar-item>
-                <van-tabbar-item name="cart" url="/cart">
+                <van-tabbar-item name="cart" url="/user_jf/cart">
                     <span>购物车</span>
                     <template #icon="props">
                         <i class="iconfont icontubiao-07"></i>
                     </template>
                 </van-tabbar-item>
-                <van-tabbar-item name="user" url="/user">
+                <van-tabbar-item name="user_jf" url="/user_jf">
                     <span>我的</span>
                     <template #icon="props">
                         <i class="iconfont icontubiao-08"></i>
@@ -170,6 +167,11 @@
             </van-tabbar>
         </div>
     </div>
+
+    <script src="/jfmobile/js/vue.min.js"></script>
+    <script src="/jfmobile/vant/vant.min.js"></script>
+    <script src="/jfmobile/js/jquery.js"></script>
+    <script src="/jfmobile/js/utils.js"></script>
     <script>
         new Vue({
             el: '#app',
@@ -236,26 +238,25 @@
                 var self = this;
                 $.ajax({
                     type: "get",
-                    url: 'http://192.168.1.182/',
+                    url: ajaxBaseUrl + '/',
                     data: {
                         request_data: 1
                     },
                     dataType: "jsonp",
                     success: function (res) {
-                        let {
-                            code,
-                            data: {
-                                news,
-                                rqsp,
-                                zxsp,
-                                dfsp,
-                                dhdt,
-                                fllist,
-                                flsp
-                            }
-                        } = res
+                        if (res.code === 1) {
+                            let {
+                                data: {
+                                    news,
+                                    rqsp,
+                                    zxsp,
+                                    dfsp,
+                                    dhdt,
+                                    fllist,
+                                    flsp
+                                }
+                            } = res
 
-                        if (code === 1) {
                             self.notices = news
                             self.rqjxList = rqsp.slice(0, 2)
                             self.zxsjList = zxsp.slice(0, 2)
@@ -274,25 +275,6 @@
                         }
                     }
                 })
-
-                // $.ajax({
-                //     type: "get",
-                //     url: "http://192.168.1.182/user_jf/order",
-                //     data: {
-                //         request_data: 1,
-                //         ids: "152",
-                //         num: 1,
-                //         free: 0,
-                //         sxmc: ""
-                //     },
-                //     dataType: "jsonp",
-                //     success: function (data) {
-                //         console.log(data)
-                //     },
-                //     error: function () {
-                //         alert('fail');
-                //     }
-                // });
             }
         })
     </script>

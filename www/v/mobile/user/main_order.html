@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0">
+    <title>积分集市-确认订单</title>
+    <link rel="stylesheet" href="/jfmobile/vant/index.css" />
+    <link rel="stylesheet" href="/jfmobile/css/normalize.css">
+    <link rel="stylesheet" href="/jfmobile/css/global.css">
+    <link rel="stylesheet" href="/jfmobile/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/jfmobile/css/main_order.css">
+
+    <script src="/jfmobile/js/flexible.js"></script>
+</head>
+
+<body>
+    <div id="app" class="layout-default" style="display: none;" :style="{display: 'block'}">
+        <div>
+            <van-nav-bar class="nav-bar-default" :title="title" left-arrow @click-left="onClickLeft" ref="navBar" />
+        </div>
+
+        <div>
+            <van-cell title="添加收货地址" icon="location-o" is-link class="exchange-cell" v-if="!address.length"
+                to="/address" />
+            <van-cell icon="location-o" is-link class="exchange-cell" label="安徽省 合肥市 蜀山区 龙图路666号 置地广场A座21层 聚名科技"
+                to="/addressList" v-else>
+                <template #title>
+                    <span class="exchange-name">小兜</span>
+                    <span class="exchange-tel">17775386326</span>
+                    <van-tag type="danger">默认</van-tag>
+                </template>
+            </van-cell>
+        </div>
+
+        <div class="gift-list">
+            <h2 class="title">
+                <i class="iconfont iconSJtubiao-11"></i>礼品清单
+            </h2>
+            <div class="list-info">
+                <div class="img">
+                    <img src="http://jfimg.juming.com/upload/img/1611005e201a949434crbMAGo.jpg" />
+                </div>
+                <div class="info">
+                    <h3>聚查点兑换(1积分=1000聚查点)</h3>
+                    <p>1积分+0元</p>
+                </div>
+            </div>
+
+            <van-form class="list-form">
+                <van-cell title="数量">
+                    <template #default>
+                        <van-stepper v-model="num" input-width="0.68rem" button-size="0.68rem" />
+                    </template>
+                </van-cell>
+
+                <van-cell title="总计">
+                    <template #default>
+                        <span class="total">9950积分+0元</span>
+                    </template>
+                </van-cell>
+
+                <van-field v-model="message" rows="2" autosize label="留言" type="textarea" placeholder="选填，备注请说明商品颜色等"
+                    input-align="right" class="message-field" />
+            </van-form>
+        </div>
+    </div>
+
+    <script src="/jfmobile/js/vue.min.js"></script>
+    <script src="/jfmobile/vant/vant.min.js"></script>
+    <script src="/jfmobile/js/jquery.js"></script>
+    <script src="/jfmobile/js/utils.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    title: '订单确认',
+                    address: [],
+                    num: 0,
+                    message: ""
+                }
+            },
+            methods: {
+                //返回上一页
+                onClickLeft() {
+                    window.history.go(-1);
+                }
+            },
+            mounted() {
+                let data = getUrlParam()
+                data.request_data = 1
+                $.ajax({
+                    type: "get",
+                    url: ajaxBaseUrl + "user_jf/order",
+                    data,
+                    dataType: "jsonp",
+                    success: function (data) {
+                        console.log(data)
+                    },
+                    error: function () {
+                        self.$toast('网络错误');
+                    }
+                });
+            }
+        })
+    </script>
+</body>
+
+</html>
