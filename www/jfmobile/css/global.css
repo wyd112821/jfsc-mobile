@@ -35,6 +35,15 @@ body {
     font-size: 1em;
 }
 
+.layout-default-fixed{
+    padding-top: 1.04rem;
+}
+.nav-bar-fixed{
+    width: 100%;
+    position: fixed;
+    top: 0;
+}
+
 
 .jftabs-content {
     width: 100%;

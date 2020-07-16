@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0">
+    <title>积分集市-帮助中心</title>
+    <link rel="stylesheet" href="/jfmobile/vant/index.css" />
+    <link rel="stylesheet" href="/jfmobile/css/normalize.css">
+    <link rel="stylesheet" href="/jfmobile/css/global.css">
+    <link rel="stylesheet" href="/jfmobile/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/jfmobile/css/main_help.css">
+
+    <script src="/jfmobile/js/flexible.js"></script>
+</head>
+<body>
+    <div id="app" class="layout-default layout-default-fixed" style="display: none;" :style="{display: 'block'}">
+        <div class="nav-bar-fixed">
+            <van-nav-bar class="nav-bar-default" :title="title" left-arrow @click-left="onClickLeft" ref="navBar" />
+        </div>
+
+        <div class="cell-wrap">
+            <div class="cell-item" v-for="(item, idx) in helpList" :key="idx">
+                <van-cell :title="item.mc" is-link :url="'/v/mobile/user/main_help_detail.html?act=' + idx" />
+            </div>
+        </div>
+    </div>
+
+    <script src="/jfmobile/js/vue.min.js"></script>
+    <script src="/jfmobile/vant/vant.min.js"></script>
+    <script src="/jfmobile/js/jquery.js"></script>
+    <script src="/jfmobile/js/utils.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    title: '帮助中心',
+                    helpList: [
+                        {
+                            mc: '积分获取'
+                        },
+                        {
+                            mc: '积分兑换'
+                        },
+                        {
+                            mc: '商品订单'
+                        },
+                        {
+                            mc: '商品售后'
+                        },
+                        {
+                            mc: '版权声明'
+                        },
+                        {
+                            mc: '规则声明'
+                        }
+                    ]
+                }
+            },
+            methods: {
+                //返回上一页
+                onClickLeft() {
+                    window.history.go(-1);
+                }
+            }
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0">
+    <title>积分集市-帮助中心详情</title>
+    <link rel="stylesheet" href="/jfmobile/vant/index.css" />
+    <link rel="stylesheet" href="/jfmobile/css/normalize.css">
+    <link rel="stylesheet" href="/jfmobile/css/global.css">
+    <link rel="stylesheet" href="/jfmobile/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/jfmobile/css/main_help.css">
+
+    <script src="/jfmobile/js/flexible.js"></script>
+</head>
+<body>
+    <div id="app" class="layout-default layout-default-fixed" style="display: none;" :style="{display: 'block'}">
+        <div class="nav-bar-fixed">
+            <van-nav-bar class="nav-bar-default" :title="title" left-arrow @click-left="onClickLeft" ref="navBar" />
+        </div>
+
+        <div class="help-detail">
+            <h3>{{ helpDetail.mc }}</h3>
+            <div class="help-info" v-html="helpDetail.nr"></div>
+        </div>
+    </div>
+
+    <script src="/jfmobile/js/vue.min.js"></script>
+    <script src="/jfmobile/vant/vant.min.js"></script>
+    <script src="/jfmobile/js/jquery.js"></script>
+    <script src="/jfmobile/js/utils.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    title: '帮助中心详情',
+                    helpDetail: {},
+                    helpList: [
+                        {
+                            mc: '积分获取',
+                            nr: "<h5>以下规则为本站积分获取规则：</h5><p>1.注册域名，每注册一个域名可获取3枚积分。</p><p>2.预定抢注域名，每预定一个不管此域名最后您是否得标都可以获取2枚积分。[但是必须您是首个预定者]</p><p>3.域名竞拍出价，不管最后您是否得标，您只要出价一次就可以获取1枚积分。[每个域名可重复获取，不限次数]</p><p>4.竞拍得标域名，可享受得标价的3%积分作为奖励，最低1枚，最高1000枚。[例如：您竞价得标一个域名，最后得标价格10000元，那么您可以同时获得300积分作为奖励]</p><p>5.一口价域名购买，可享受购买价格的0.5%积分作为奖励，最低1枚，最高500枚。[例如：您购买一个域名，价格1000元，那么您可以同时获得5积分作为奖励]</p><p>6.玩积分商城的一些游戏可以赢积分。</p><p>7.相关本站专项活动会有积分奖励。（根据活动规则）</p><h5>用户需知</h5><p>本站所有用户请勿使用非法手段或者利用网站BUG刷积分，如发现本站有权清空您的帐户所有积分，情节严重的将追究您的刑事责任!</p>"
+                        },
+                        {
+                            mc: '积分兑换',
+                            nr: "<h5>1.什么是积分？</h5><p>积分是本站的站内虚拟币，用户无法转帐，积分不能兑换人民币。</p><h5>2.积分有什么用？</h5><p>1.可以进入积分集市兑换的精美礼品。(集市礼品会不定期更新)</p><p>2.可以进入积分集市玩游戏。</p><p>3.在站内特定功能上使用。[获取一口价广告位，等等..]</p><p>4.使用积分,资金提现免手续费。</p><p>5.代理用户使用积分赠送高级会员给其他用户。</p><p>6.等待增加..</p><h5>3.积分怎么获取？</h5><p>以下规则(2018-02-24日起)程序开始正式执行</p><p>1.注册域名，每注册一个域名可获取3枚积分。</p><p>2.预定抢注域名，每预定一个不管此域名最后您是否得标都可以获取2枚积分。[但是必须您是首个预定者]</p><p>3.域名竞拍出价，不管最后您是否得标，您只要出价一次就可以获取1枚积分。[每个域名可重复获取，不限次数]</p><p>4.竞拍得标域名，可享受得标价的3%积分作为奖励，最低1枚，最高1000枚。</p><p>[例如：您竞价得标一个域名，最后得标价格10000元，那么您可以同时获得300积分作为奖励]</p><p>5.一口价域名购买，可享受购买价格的0.5%积分作为奖励，最低1枚，最高500枚。</p><p>[例如：您购买一个域名，价格1000元，那么您可以同时获得5积分作为奖励]</p><p>6.玩积分集市游戏赢积分。</p><p>7.等待增加..</p><h5>4.用户需知</h5><p>积分作为奖励，只可以作为兑换奖品使用，禁止交易，本站保留最终解释权。</p><p>本站保留对此规则随时修改添加的所有权。</p><p>本站所有用户请勿使用非法手段或者利用网站BUG刷积分，如发现本站有权清空您的帐户所有积分，情节严重的将追究您的刑事责任！</p>"
+                        },
+                        {
+                            mc: '商品订单',
+                            nr: "<p>用户在本平台兑换商品时请认真填写订单及个人信息。</p><p>若因个人原因造成兑换商品、邮寄地址、联系方式等订单信息填写错误造成商品兑换失败，本平台不承担任何责任。</p>"
+                        },
+                        {
+                            mc: '商品售后',
+                            nr: "<p>1.用户在本平台兑换的商品皆为正品行货，请您放心兑换！商品一经兑出不退不换，本平台拥有对所有商品的最终解释权。</p><p>2.少量商品可能存在暂时性缺货或下架的状况，本平台在此情况下有权退还积分或与用户商议改兑其他商品。因此对您产生的不便，本平台深表歉意。</p><p>3.本站不能确保客户收到的货物与商城显示的图片、产地、附件说明完全一致。但能确保为原厂正货！若本站没有及时更新，敬请谅解。</p>"
+                        },
+                        {
+                            mc: '版权声明',
+                            nr: "<p>1.集市所有的商品信息、客户评价、商品咨询、网友讨论等内容，是本站重要的经营资源，未经许可，禁止非法转载使用。</p><p>2.本平台商品信息均来自于合作方，其真实性、准确性和合法性由信息拥有者（合作方）负责。本站不提供任何保证，并不承担任何法律责任。</p>"
+                        },
+                        {
+                            mc: '规则声明',
+                            nr: "<p>1.积分私下交易，通过作弊软件非法获取积分等违规行为是被严厉禁止的。</p><p>2.通过上述途径所获得的积分也是不被承认的。若用户有以上不良举动，可能承担相关法律后果。</p>"
+                        }
+                    ]
+                }
+            },
+            methods: {
+                //返回上一页
+                onClickLeft() {
+                    window.history.go(-1);
+                }
+            },
+            mounted() {
+                let act = getUrlParam().act;
+                this.helpDetail = this.helpList[act];
+            },
+        })
+    </script>
+</body>
+</html>

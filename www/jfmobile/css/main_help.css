@@ -1,0 +1,44 @@
+.cell-wrap{
+    padding: 0.2rem 0.3rem;
+}
+.cell-item{
+    margin-bottom: 0.2rem;
+}
+.cell-item .van-cell{
+    border-radius: 0.2rem;
+    line-height: 0.28rem;
+    padding: 0.36rem 0.25rem;
+    font-size: 0.3rem;
+}
+
+.cell-item .van-cell .van-cell__title{
+    display: flex;
+    align-items: center;
+}
+
+.help-detail{
+    padding: 0.3rem;
+}
+.help-detail h3{
+    margin: 0.3rem 0 0.4rem;
+    text-align: center;
+    font-size: 0.34rem;
+    font-weight: normal;
+    color: #222;
+}
+.help-info {
+    padding: 0.24rem;
+    border-radius: 0.2rem;
+    background-color: #fff;
+}
+.help-info h5{
+    margin: 0.3rem 0;
+    font-weight: normal;
+    color: #666;
+}
+.help-info p{
+    margin: 0.16rem 0;
+    line-height: 0.44rem;
+    font-size: 0.26rem;
+    color: #666;
+}
