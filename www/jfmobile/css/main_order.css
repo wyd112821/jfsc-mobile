@@ -93,3 +93,90 @@
     margin: 0;
     color: #999;
 }
+
+.submit-bar-wrap {
+    box-shadow: 0 1px 0.2rem 0 rgba(0, 0, 0, 0.06);
+}
+
+.submit-bar-wrap .van-submit-bar__bar {
+    height: 1.28rem;
+    padding: 0 0.3rem;
+}
+
+.submit-bar-wrap .total {
+    padding-right: 0.44rem;
+    font-size: 0.28rem;
+}
+
+.submit-bar-wrap .total strong {
+    font-size: 0.32rem;
+    color: #FF4C4B;
+    font-weight: normal;
+}
+
+.submit-bar-wrap .van-submit-bar__button {
+    width: 2.6rem;
+    height: 0.98rem;
+    border-radius: 0.5rem;
+    font-size: 0.32rem;
+}
+
+.pay-wrap {
+    padding: 0.32rem;
+}
+
+.pay-way {
+    box-sizing: border-box;
+    padding: 0.26rem 0.3rem;
+    border: 1px solid #eee;
+    margin-top: 0.2rem;
+    font-size: 0.24rem;
+}
+
+.pay-way h4 {
+    margin: 0 0 0.14rem;
+    font-weight: normal;
+    text-align: left;
+    font-size: 0.28rem;
+}
+
+.pay-way p {
+    margin: 0;
+    text-align: left;
+    line-height: 0.44rem;
+}
+
+.pay-wrap .active {
+    border: 1px solid #0f9fff;
+    color: #0f9fff;
+}
+
+.integral-convert {
+    display: flex;
+    flex-direction: column;
+    padding: 0.8rem 0.6rem 0;
+    align-items: center;
+}
+
+.integral-convert .van-icon {
+    font-size: 1.6rem;
+}
+
+.integral-convert h3 {
+    margin: 0.6rem 0 0;
+    font-size: 0.42rem;
+    font-weight: normal;
+    color: #666;
+}
+
+.integral-convert p {
+    line-height: 0.52rem;
+    color: #999;
+    text-align: center;
+    font-size: 0.28rem;
+}
+
+.integral-convert a {
+    color: #0f9fff;
+    font-size: 0.28rem;
+}

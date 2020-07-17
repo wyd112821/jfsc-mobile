@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0">
+    <title>积分集市-购物车</title>
+    <link rel="stylesheet" href="/jfmobile/vant/index.css" />
+    <link rel="stylesheet" href="/jfmobile/css/normalize.css">
+    <link rel="stylesheet" href="/jfmobile/css/global.css">
+    <link rel="stylesheet" href="/jfmobile/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/jfmobile/css/main_cart.css">
+
+    <script src="/jfmobile/js/flexible.js"></script>
+</head>
+
+<body>
+    <div id="app" class="layout-default layout-default-fixed" style="display: none;" :style="{display: 'block'}">
+        <div v-if="loading" class="page-loading">
+            <div class="page-loading__tip">
+                <van-loading color="#fff" size="34"></van-loading>
+                <p>内容加载中...</p>
+            </div>
+        </div>
+
+        <div class="nav-bar-fixed">
+            <van-nav-bar class="nav-bar-default" :title="title" left-arrow @click-left="onClickLeft" ref="navBar" />
+        </div>
+
+        <div class="cart-list">
+            <h2 class="title">
+                <i class="iconfont iconSJtubiao-11"></i>礼品清单
+            </h2>
+
+            <van-checkbox-group v-model="result" ref="checkboxGroup">
+                <van-cell-group>
+                    <van-cell class="cart-item" v-for="item in list" :key="item.id" @touchstart="start" @touchend="end">
+                        <template #title>
+                            <van-checkbox :name="item.id" v-model="item.isChecked"
+                                @click="chooseChange(item.id, item)" />
+                        </template>
+                        <template #default>
+                            <div class="cart-info">
+                                <div class="img">
+                                    <img :src="item.img" />
+                                </div>
+                                <div class="info">
+                                    <h3 class="multiline-ellipsis2">{{ item.mc }}</h3>
+                                    <div class="jf-wrap">
+                                        <span class="jf">{{ item.dhjf*item.znum }}积分+{{ item.dhjg*item.znum }}元</span>
+                                        <van-stepper v-model="item.znum" @change="onChange(item)" input-width="0.58rem"
+                                            button-size="0.44rem" />
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </van-cell>
+                </van-cell-group>
+            </van-checkbox-group>
+        </div>
+
+        <van-submit-bar button-text="提交订单" @submit="onSubmit" class="submit-bar-wrap">
+            <template #default>
+                <van-checkbox v-model="allchecked" @click="checkAll">全选</van-checkbox>
+                <span class="total">
+                    合计：
+                    <strong>{{ totalJf }}积分+0元</strong>
+                </span>
+            </template>
+        </van-submit-bar>
+
+        <form action="/user_jf/order" id="forms" method="post">
+            <input type="hidden" name="ids" :value="forms.ids">
+            <input type="hidden" name="num" :value="forms.num">
+            <input type="hidden" name="type" value="cart">
+            <input type="hidden" name="sxmc" :value="forms.sxmc">
+        </form>
+
+        <div class="layout-menu-bar">
+            <van-tabbar v-model="menuActive" class="menu-bar" ref="menuBar">
+                <van-tabbar-item name="index" url="/">
+                    <span>首页</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-06"></i>
+                    </template>
+                </van-tabbar-item>
+                <van-tabbar-item name="goods" url="/goods">
+                    <span>分类</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-05"></i>
+                    </template>
+                </van-tabbar-item>
+                <van-tabbar-item name="cart" url="/user_jf/cart">
+                    <span>购物车</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-07"></i>
+                    </template>
+                </van-tabbar-item>
+                <van-tabbar-item name="user_jf" url="/user_jf">
+                    <span>我的</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-08"></i>
+                    </template>
+                </van-tabbar-item>
+            </van-tabbar>
+        </div>
+    </div>
+
+    <script src="/jfmobile/js/vue.min.js"></script>
+    <script src="/jfmobile/vant/vant.min.js"></script>
+    <script src="/jfmobile/js/jquery.js"></script>
+    <script src="/jfmobile/js/utils.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    loading: false,
+                    menuActive: "cart",
+                    title: '购物车',
+                    list: [],
+                    result: [],
+                    num: 0,
+                    allchecked: false,
+                    selectedData: [],
+                    totalJf: 0,
+                    totalJg: 0,
+                    forms: {}
+                }
+            },
+            methods: {
+                //返回上一页
+                onClickLeft() {
+                    window.history.go(-1);
+                },
+                start() {
+                    clearTimeout(this.loop); //再次清空定时器，防止重复注册定时器
+                    this.loop = setTimeout(() => {
+                        this.$toast("长按了");
+                    }, 1000);
+                },
+                end() {
+                    clearTimeout(this.loop); //清空定时器，防止重复注册定时器
+                },
+                // 单选的change事件
+                chooseChange(i, item) {
+                    if (this.selectedData.indexOf(i) > -1) {
+                        var arrs = this.selectedData.filter(function (item) {
+                            return item != i;
+                        });
+                        this.selectedData = arrs;
+                        item.isChecked = false;
+                        this.count();
+                    } else {
+                        this.selectedData.push(i);
+                        item.isChecked = true;
+                        this.count();
+                    }
+
+                    if (this.selectedData.length < this.list.length) {
+                        this.allchecked = false;
+                    } else {
+                        this.allchecked = true;
+                    }
+                    this.count();
+                },
+                // 商品数量
+                onChange(item) {
+                    this.count();
+                },
+                // 计算积分
+                count() {
+                    let totalJf = 0;
+                    let totalJg = 0;
+                    this.list.forEach(function (val) {
+                        if (val.isChecked) {
+                            totalJf += parseInt(val.dhjf) * parseInt(val.znum); //累计积分
+                            totalJg += parseInt(val.dhjf) * parseInt(val.znum); //累计价格
+                        }
+                    });
+                    this.totalJf = totalJf;
+                    this.totalJg = totalJg;
+                },
+                // 全选
+                checkAll() {
+                    let list = this.list;
+                    if (this.allchecked) {
+                        this.$refs.checkboxGroup.toggleAll(true);
+                        list.forEach(element => {
+                            element.isChecked = true;
+                            if (this.selectedData.indexOf(element.id) < 0) {
+                                this.selectedData.push(element.id);
+                            }
+                        });
+                        this.count();
+                    } else {
+                        this.$refs.checkboxGroup.toggleAll();
+                        list.forEach(element => {
+                            element.isChecked = false;
+                        });
+                        this.selectedData = [];
+                        this.count();
+                    }
+                },
+                // 去结算
+                onSubmit() {
+                    // 选择购买的商品
+                    var cartLists = [];
+                    this.list.forEach(function (item) {
+                        if (item.isChecked) {
+                            cartLists.push({
+                                id: item.id,
+                                num: item.znum,
+                                sxmc: item.sxmc
+                            });
+                        }
+                    });
+
+                    let ids = ''
+                    let num = ''
+                    let sxmc = ''
+                    cartLists.forEach(item => {
+                        ids += item.id + ','
+                        num += item.num + ','
+                        sxmc += item.sxmc + ','
+                    })
+                    this.forms.ids = ids;
+                    this.forms.num = num;
+                    this.forms.sxmc = sxmc;
+
+                    if (cartLists.length === 0) {
+                        this.$toast("请选择商品购买");
+                    } else {
+                        console.log(this.forms)
+                        //$('#forms').submit();
+                    }
+                }
+            },
+            mounted() {
+                var self = this;
+                $.ajax({
+                    url: ajaxBaseUrl + 'user_jf/p_cart_list',
+                    type: 'post',
+                    dataType: 'json',
+                    headers: {
+                        "X-Requested-With": "xmlhttprequest"
+                    },
+                    success: function (res) {
+                        if (res.code == 1) {
+                            let {
+                                count,
+                                data: {
+                                    data: list
+                                }
+                            } = res
+
+                            self.list = list;
+                            console.log(res)
+                        } else {
+                            self.$toast(res.msg);
+                        }
+                    }
+                });
+            }
+        })
+    </script>
+</body>
+
+</html>

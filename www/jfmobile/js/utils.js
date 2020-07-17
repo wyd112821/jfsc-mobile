@@ -1,5 +1,5 @@
 //ajax BaseURL
-var ajaxBaseUrl = 'http://192.168.1.182/';
+var ajaxBaseUrl = 'http://123.59.58.111/';
 
 //获取地址栏参数
 function getUrlParam() {

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0">
+    <title>积分集市-订单完成</title>
+    <link rel="stylesheet" href="/jfmobile/vant/index.css" />
+    <link rel="stylesheet" href="/jfmobile/css/normalize.css">
+    <link rel="stylesheet" href="/jfmobile/css/global.css">
+    <link rel="stylesheet" href="/jfmobile/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/jfmobile/css/main_order.css">
+
+    <script src="/jfmobile/js/flexible.js"></script>
+</head>
+
+<body>
+    <div id="app" class="layout-default" style="display: none;" :style="{display: 'block'}">
+        <van-nav-bar class="nav-bar-default" :title="title" left-arrow @click-left="onClickLeft" ref="navBar">
+        </van-nav-bar>
+
+        <div class="integral-convert">
+            <van-icon name="passed" color="#0091FF"></van-icon>
+            <h3>兑换成功</h3>
+            <p>请耐心等待客服处理，处理信息我们将反馈至您的邮箱和站内信！请注意查收。</p>
+            <a href="/user_jf">查看订单</a>
+        </div>
+    </div>
+
+    <script src="/jfmobile/js/vue.min.js"></script>
+    <script src="/jfmobile/vant/vant.min.js"></script>
+    <script src="/jfmobile/js/jquery.js"></script>
+    <script src="/jfmobile/js/utils.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    title: '订单完成',
+                }
+            },
+            methods: {
+                //返回上一页
+                onClickLeft() {
+                    window.history.go(-1);
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

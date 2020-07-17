@@ -16,19 +16,26 @@
 
 <body>
     <div id="app" class="layout-default" style="display: none;" :style="{display: 'block'}">
+        <div v-if="loading" class="page-loading">
+            <div class="page-loading__tip">
+                <van-loading color="#fff" size="34"></van-loading>
+                <p>内容加载中...</p>
+            </div>
+        </div>
+
         <div>
             <van-nav-bar class="nav-bar-default" :title="title" left-arrow @click-left="onClickLeft" ref="navBar" />
         </div>
 
         <div>
-            <van-cell title="添加收货地址" icon="location-o" is-link class="exchange-cell" v-if="!address.length"
-                to="/address" />
-            <van-cell icon="location-o" is-link class="exchange-cell" label="安徽省 合肥市 蜀山区 龙图路666号 置地广场A座21层 聚名科技"
-                to="/addressList" v-else>
+            <van-cell title="添加收货地址" icon="location-o" is-link class="exchange-cell" v-if="!default_address"
+                url="/address"></van-cell>
+            <van-cell icon="location-o" is-link class="exchange-cell" :label="default_address.address"
+                url="/addressList" v-else>
                 <template #title>
-                    <span class="exchange-name">小兜</span>
-                    <span class="exchange-tel">17775386326</span>
-                    <van-tag type="danger">默认</van-tag>
+                    <span class="exchange-name">{{ default_address.zsxm }}</span>
+                    <span class="exchange-tel">{{ default_address.sj }}</span>
+                    <van-tag type="danger" v-if="default_address.isdefault == 1">默认</van-tag>
                 </template>
             </van-cell>
         </div>
@@ -37,32 +44,57 @@
             <h2 class="title">
                 <i class="iconfont iconSJtubiao-11"></i>礼品清单
             </h2>
-            <div class="list-info">
-                <div class="img">
-                    <img src="http://jfimg.juming.com/upload/img/1611005e201a949434crbMAGo.jpg" />
+
+            <div v-for="(goods, idx) in goodslist" :key="goods.id">
+                <div class="list-info">
+                    <div class="img">
+                        <img :src="goods.img" />
+                    </div>
+                    <div class="info">
+                        <h3>{{ goods.mc }}</h3>
+                        <p>{{ goods.dhjf }}积分+{{ goods.dhjg }}元</p>
+                    </div>
                 </div>
-                <div class="info">
-                    <h3>聚查点兑换(1积分=1000聚查点)</h3>
-                    <p>1积分+0元</p>
-                </div>
+
+                <van-form class="list-form">
+                    <van-cell title="数量">
+                        <template #default>
+                            <van-stepper :v-model="goodslist[idx].num" :name="idx" input-width="0.68rem"
+                                button-size="0.68rem" @change="stepperChange" />
+                        </template>
+                    </van-cell>
+
+                    <van-cell title="总计">
+                        <template #default>
+                            <span
+                                class="total">{{ goods.dhjf * parseInt(goodslist[idx].num) }}积分+{{ goods.dhjg * parseInt(goodslist[idx].num) }}元</span>
+                        </template>
+                    </van-cell>
+
+                    <van-field v-model="goodslist[idx].bz" rows="2" autosize label="留言" type="textarea"
+                        placeholder="选填，备注请说明商品颜色等" input-align="right" class="message-field"
+                        @blur="blurBz(event,idx)" />
+                </van-form>
             </div>
 
-            <van-form class="list-form">
-                <van-cell title="数量">
-                    <template #default>
-                        <van-stepper v-model="num" input-width="0.68rem" button-size="0.68rem" />
-                    </template>
-                </van-cell>
+            <van-submit-bar button-text="提交订单" @submit="onSubmit" class="submit-bar-wrap">
+                <template #default>
+                    <span class="total">
+                        合计：
+                        <strong>{{ totaljf }}积分+{{ totaljg }}元</strong>
+                    </span>
+                </template>
+            </van-submit-bar>
 
-                <van-cell title="总计">
-                    <template #default>
-                        <span class="total">9950积分+0元</span>
-                    </template>
-                </van-cell>
-
-                <van-field v-model="message" rows="2" autosize label="留言" type="textarea" placeholder="选填，备注请说明商品颜色等"
-                    input-align="right" class="message-field" />
-            </van-form>
+            <van-dialog v-model="payShow" title="选择聚点到账方式" show-cancel-button @confirm="confirmPay">
+                <div class="pay-wrap">
+                    <div v-for="(pay, idx) in payList" @click="paySelect(idx)"
+                        :class="['pay-way', idx === payIndex ? 'active' : '']">
+                        <h4>立即到账</h4>
+                        <p>完成后聚点直接到本账户对应的聚查账户，适合当前账户使用</p>
+                    </div>
+                </div>
+            </van-dialog>
         </div>
     </div>
 
@@ -75,19 +107,126 @@
             el: '#app',
             data() {
                 return {
+                    loading: true,
                     title: '订单确认',
-                    address: [],
-                    num: 0,
-                    message: ""
+                    default_address: {},
+                    type: '',
+                    free: '',
+                    sxmc: '',
+                    goodslist: [],
+                    payShow: false,
+                    payList: [{
+                            mc: '立即到账',
+                            desc: '完成后聚点直接到本账户对应的聚查账户，适合当前账户使用'
+                        },
+                        {
+                            mc: '卡密到账',
+                            desc: '完成后会获得卡密，卡密兑换后对应账户会获得聚查点，适合给其他账户使用，卡密在“积分集市-我的账户-消息”中查看，在聚查后台兑换'
+                        }
+                    ],
+                    payIndex: 0,
+                    jcdhfs: 1
+                }
+            },
+            computed: {
+                totaljf() {
+                    let totaljf = 0
+                    this.goodslist.forEach(item => {
+                        totaljf += parseInt(item.dhjf) * parseInt(item.num)
+                    })
+                    return totaljf
+                },
+                totaljg() {
+                    let totaljg = 0
+                    this.goodslist.forEach(item => {
+                        totaljg += parseInt(item.dhjg) * parseInt(item.num)
+                    })
+                    return totaljg
                 }
             },
             methods: {
                 //返回上一页
                 onClickLeft() {
                     window.history.go(-1);
+                },
+                //监听计数器
+                stepperChange(value, detail) {
+                    this.goodslist[detail.name].num = value;
+                },
+                //监听留言框
+                blurBz(event, idx) {
+                    this.goodslist[idx].bz = event.target.value
+                },
+                //提交订单
+                onSubmit() {
+                    if (getUrlParam().ids == 59) {
+                        this.payShow = true
+                        return false;
+                    }
+                    this.confirmOrder()
+                    //console.log(this.goodslist)
+                },
+                paySelect(idx) {
+                    this.payIndex = idx;
+                    this.jcdhfs = idx === 0 ? 1 : 2;
+                },
+                //确认支付方式
+                confirmPay() {
+                    this.confirmOrder(1)
+                },
+                //订单提交
+                confirmOrder(type) {
+                    let datas = {}
+                    let ids = ''
+                    let nums = ''
+                    let bzs = ''
+                    this.goodslist.forEach(item => {
+                        ids += item.id + ','
+                        nums += item.num + ','
+                        bzs += item.bz + ','
+                    })
+
+                    if (type == 1) {
+                        datas = {
+                            id: ids.substring(0, ids.length - 1),
+                            num: nums.substring(0, nums.length - 1),
+                            bz: bzs.substring(0, bzs.length - 1),
+                            addressid: this.default_address.id,
+                            type: this.type,
+                            free: this.free,
+                            sxmc: this.sxmc,
+                            jcdhfs: this.jcdhfs
+                        }
+                    } else {
+                        datas = {
+                            id: ids.substring(0, ids.length - 1),
+                            num: nums.substring(0, nums.length - 1),
+                            bz: bzs.substring(0, bzs.length - 1),
+                            addressid: this.default_address.id,
+                            type: this.type,
+                            free: this.free,
+                            sxmc: this.sxmc
+                        }
+                    }
+                    var self = this;
+                    $.ajax({
+                        url: ajaxBaseUrl + 'user_jf/p_duihuan',
+                        type: 'post',
+                        data: datas,
+                        dataType: 'json',
+                        success: function (res) {
+                            if (res.code == 1) {
+                                self.$toast(res.msg);
+                                window.location.href = '/user_jf/convert'
+                            } else {
+                                self.$toast(res.msg);
+                            }
+                        }
+                    });
                 }
             },
             mounted() {
+                var self = this;
                 let data = getUrlParam()
                 data.request_data = 1
                 $.ajax({
@@ -95,8 +234,21 @@
                     url: ajaxBaseUrl + "user_jf/order",
                     data,
                     dataType: "jsonp",
-                    success: function (data) {
-                        console.log(data)
+                    success: function (res) {
+                        if (res.code === 1) {
+                            let {
+                                data: {
+                                    free,
+                                    type,
+                                    sxmc,
+                                    goodslist,
+                                    default_address
+                                }
+                            } = res
+                            self.goodslist = goodslist;
+                            self.default_address = default_address;
+                            self.loading = false
+                        }
                     },
                     error: function () {
                         self.$toast('网络错误');

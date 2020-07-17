@@ -16,6 +16,13 @@
 
 <body>
     <div id="app" class="layout-default" style="display: none;" :style="{display: 'block'}">
+        <div v-if="loading" class="page-loading">
+            <div class="page-loading__tip">
+                <van-loading color="#fff" size="34"></van-loading>
+                <p>内容加载中...</p>
+            </div>
+        </div>
+
         <div @click="hideMenu">
             <div class="navi-bar">
                 <button class="btn-back" @click="goBack">
@@ -139,6 +146,7 @@
             el: '#app',
             data() {
                 return {
+                    loading: true,
                     menuShow: false,
                     activeName: "礼品介绍",
                     current: 0,
@@ -292,6 +300,8 @@
                             self.goodsinfo.zysx = goodsinfo.zysx
                             self.goodsinfo.tzurl = goodsinfo.tzurl
                             self.xdsl = tequansl
+
+                            self.loading = false;
                         }
                     }
                 })

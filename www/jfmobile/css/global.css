@@ -35,10 +35,11 @@ body {
     font-size: 1em;
 }
 
-.layout-default-fixed{
+.layout-default-fixed {
     padding-top: 1.04rem;
 }
-.nav-bar-fixed{
+
+.nav-bar-fixed {
     width: 100%;
     position: fixed;
     top: 0;
@@ -106,4 +107,35 @@ body {
 .nav-bar-default .van-nav-bar__title {
     font-size: 0.32rem;
     color: #000;
+}
+
+.page-loading {
+    position: fixed;
+    z-index: 995;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.page-loading .page-loading__tip {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    color: #fff;
+    border-radius: 0.2rem;
+    padding: 0.36rem 0.26rem;
+    background-color: #0091ff;
+    box-shadow: 0.06rem 0.1rem 0.4rem rgba(10, 132, 234, 0.5);
+    text-align: center;
+}
+
+.page-loading .page-loading__tip .van-loading {
+    margin-bottom: 0.2rem;
+}
+
+.page-loading .page-loading__tip p {
+    margin: 0;
+    font-size: 0.24rem;
+    color: #fff;
 }
