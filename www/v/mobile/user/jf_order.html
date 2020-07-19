@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0">
+    <title>积分集市-我的订单</title>
+    <link rel="stylesheet" href="/jfmobile/vant/index.css" />
+    <link rel="stylesheet" href="/jfmobile/css/normalize.css">
+    <link rel="stylesheet" href="/jfmobile/css/global.css">
+    <link rel="stylesheet" href="/jfmobile/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/jfmobile/css/jf_index.css">
+
+    <script src="/jfmobile/js/flexible.js"></script>
+</head>
+
+<body>
+    <div id="app" class="layout-default" style="display: none;" :style="{display: 'block'}">
+        <div v-if="loading" class="page-loading">
+            <div class="page-loading__tip">
+                <van-loading color="#fff" size="34"></van-loading>
+                <p>内容加载中...</p>
+            </div>
+        </div>
+
+        <div>
+            <van-nav-bar class="nav-bar-default" :title="title" left-arrow @click-left="onClickLeft" ref="navBar" />
+        </div>
+
+        <van-tabs class="order-wrapper" v-model="active" sticky>
+            <van-tab title="全部订单">
+                <div class="order-list">
+                    <van-list v-model="list[0].loading" :finished="list[0].finished" finished-text="没有更多了"
+                        @load="onLoad(0)" v-if="!this.list[0].empty">
+                        <div class="order-item" v-for="(item, idx) in list[0].items" :key="idx">
+                            <div class="order-top">
+                                <span class="dhh">订单编号：{{ item.ddh }}</span>
+                                <span class="state" v-if="item.zt == 1">未处理</span>
+                                <span class="handled" v-else>已处理</span>
+                            </div>
+                            <div class="order-middle">
+                                <p>商品名称：{{ item.mc }}</p>
+                                <p>创建时间：{{ item.tjsj }}</p>
+                                <p>处理时间：{{ item.wcsj }}</p>
+                                <p>订单类型：{{ item.xnsp == 1 ? '虚拟商品' : '非虚拟商品' }}</p>
+                                <p>快递信息：{{ item.kdmc }}-{{ item.kddh }}</p>
+                            </div>
+                            <div class="order-bottom">消耗积分：{{ item.dhjf }}积分+{{ item.dhjg }}元</div>
+                        </div>
+                    </van-list>
+                    <van-empty description="暂无订单~" v-if="this.list[0].empty" />
+                </div>
+            </van-tab>
+
+            <van-tab title="未处理">
+                <div class="order-list">
+                    <van-list v-model="list[1].loading" :finished="list[1].finished" finished-text="没有更多了"
+                        @load="onLoad(1)" v-if="!this.list[1].empty">
+                        <div class="order-item" v-for="(item, idx) in list[1].items" :key="idx">
+                            <div class="order-top">
+                                <span class="dhh">订单编号：{{ item.ddh }}</span>
+                                <span class="state">未处理</span>
+                            </div>
+                            <div class="order-middle">
+                                <p>商品名称：{{ item.mc }}</p>
+                                <p>创建时间：{{ item.tjsj }}</p>
+                                <p>处理时间：{{ item.wcsj }}</p>
+                                <p>订单类型：{{ item.xnsp == 1 ? '虚拟商品' : '非虚拟商品' }}</p>
+                                <p>快递信息：{{ item.kdmc }}-{{ item.kddh }}</p>
+                            </div>
+                            <div class="order-bottom">消耗积分：{{ item.dhjf }}积分+{{ item.dhjg }}元</div>
+                        </div>
+                    </van-list>
+                    <van-empty description="暂无未处理订单~" v-if="this.list[1].empty" />
+                </div>
+            </van-tab>
+
+            <van-tab title="已处理">
+                <div class="order-list">
+                    <van-list v-model="list[2].loading" :finished="list[2].finished" finished-text="没有更多了"
+                        @load="onLoad(2)" v-if="!this.list[2].empty">
+                        <div class="order-item" v-for="(item, idx) in list[2].items" :key="idx">
+                            <div class="order-top">
+                                <span class="dhh">订单编号：{{ item.ddh }}</span>
+                                <span class="handled">已处理</span>
+                            </div>
+                            <div class="order-middle">
+                                <p>商品名称：{{ item.mc }}</p>
+                                <p>创建时间：{{ item.tjsj }}</p>
+                                <p>处理时间：{{ item.wcsj }}</p>
+                                <p>订单类型：{{ item.xnsp == 1 ? '虚拟商品' : '非虚拟商品' }}</p>
+                                <p>快递信息：{{ item.kdmc }}-{{ item.kddh }}</p>
+                            </div>
+                            <div class="order-bottom">消耗积分：{{ item.dhjf }}积分+{{ item.dhjg }}元</div>
+                        </div>
+                    </van-list>
+                    <van-empty description="暂无已处理订单~" v-if="this.list[2].empty" />
+                </div>
+            </van-tab>
+        </van-tabs>
+
+        <div class="layout-menu-bar">
+            <van-tabbar v-model="menuActive" class="menu-bar" ref="menuBar">
+                <van-tabbar-item name="index" url="/">
+                    <span>首页</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-06"></i>
+                    </template>
+                </van-tabbar-item>
+                <van-tabbar-item name="goods" url="/goods">
+                    <span>分类</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-05"></i>
+                    </template>
+                </van-tabbar-item>
+                <van-tabbar-item name="cart" url="/user_jf/cart">
+                    <span>购物车</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-07"></i>
+                    </template>
+                </van-tabbar-item>
+                <van-tabbar-item name="user_jf" url="/user_jf">
+                    <span>我的</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-08"></i>
+                    </template>
+                </van-tabbar-item>
+            </van-tabbar>
+        </div>
+    </div>
+
+    <script src="/jfmobile/js/vue.min.js"></script>
+    <script src="/jfmobile/vant/vant.min.js"></script>
+    <script src="/jfmobile/js/jquery.js"></script>
+    <script src="/jfmobile/js/utils.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    loading: true,
+                    title: '我的订单',
+                    menuActive: "user_jf",
+                    active: 0,
+                    list: [{
+                            items: [],
+                            loading: false,
+                            finished: false,
+                            empty: false,
+                            data: { //全部订单
+                                page: 1,
+                                pageSize: 9
+                            }
+                        },
+                        {
+                            items: [],
+                            loading: false,
+                            finished: false,
+                            empty: false,
+                            data: {
+                                zt: 2, //未处理
+                                page: 1,
+                                pageSize: 9
+                            }
+                        },
+                        {
+                            items: [],
+                            loading: false,
+                            finished: false,
+                            empty: false,
+                            data: {
+                                zt: 1, //已处理
+                                page: 1,
+                                pageSize: 9
+                            }
+                        }
+                    ]
+                }
+            },
+            methods: {
+                //返回上一页
+                onClickLeft() {
+                    window.history.go(-1);
+                },
+                onLoad(index) {
+                    var self = this;
+                    const list = self.list[index];
+                    list.loading = true;
+                    // 异步更新数据
+                    $.ajax({
+                        type: "post",
+                        url: ajaxBaseUrl + "user_jf/p_my_order",
+                        data: list.data,
+                        headers: {
+                            "X-Requested-With": "xmlhttprequest"
+                        },
+                        success: function (res) {
+                            if (res.code === 1) {
+                                let dataLength = res.data.count;
+                                let dataInfo = res.data.data;
+                                if (dataInfo.length === 0) {
+                                    list.empty = true;
+                                }
+                                for (let i = 0; i < dataInfo.length; i++) {
+                                    list.items.push(dataInfo[i]);
+                                }
+                                // 加载状态结束
+                                list.loading = false;
+                                list.data.page++;
+                                // 数据全部加载完成
+                                if (list.items.length >= dataLength) {
+                                    list.finished = true;
+                                }
+                                self.loading = false
+                            }
+                        }
+                    })
+                }
+            },
+            created() {
+                this.active = parseInt(getUrlParam().cur)
+            }
+        })
+    </script>
+</body>
+
+</html>

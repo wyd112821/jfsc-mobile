@@ -120,7 +120,7 @@
                     <van-icon name="chat-o"></van-icon>
                     <span>客服</span>
                 </div>
-                <div class="goods-action-icon">
+                <div class="goods-action-icon" @click="goCart">
                     <van-icon name="shopping-cart-o" :dot="isAddCart"></van-icon>
                     <span>购物车</span>
                 </div>
@@ -134,6 +134,15 @@
                     </template>
                 </div>
             </div>
+
+            <form action="/user_jf/order" id="forms" method="post">
+                <input type="hidden" name="ids" :value="goodsinfo.id">
+                <input type="hidden" name="num" :value="num">
+                <input type="hidden" name="free" :value="free">
+                <input type="hidden" name="sxmc" :value="sxmc">
+                <input type="hidden" name="mc" :value="goodsinfo.mc">
+                <input type="hidden" name="xdsl" :value="xdsl">
+            </form>
         </div>
     </div>
 
@@ -170,6 +179,8 @@
                         tzurl: ''
                     },
                     xdsl: 0,
+                    num: 1,
+                    free: 1,
                     tjsp: []
                 };
             },
@@ -186,6 +197,10 @@
                 },
                 onChange(index) {
                     this.current = index;
+                },
+                //跳转购物车
+                goCart() {
+                    window.location.href = "/user_jf/cart"
                 },
                 //商品规格选择
                 clickSx(i, item) {
@@ -228,17 +243,19 @@
                                     "”个，点击确定可直接兑换哦！"
                             })
                             .then(() => {
+                                this.free = 1
+                                this.num = this.xdsl
                                 //window.location.href = `/user_jf/order?ids=${this.goodsinfo.id}&num=${this.xdsl}&free=1&sxmc=${this.sxmc}`
-                                window.location.href =
-                                    `/v/mobile/user/main_order.html?ids=${this.goodsinfo.id}&num=${this.xdsl}&free=1&sxmc=${this.sxmc}`
+                                $('#forms').submit();
                             })
                             .catch(() => {
-                                self.$toast('网络错误');
+                                
                             });
                     } else {
-                        //window.location.href = `/user_jf/order?ids=${this.goodsinfo.id}&num=1&free=0&sxmc=${this.sxmc}`
-                        window.location.href =
-                            `/v/mobile/user/main_order.html?ids=${this.goodsinfo.id}&num=1&free=0&sxmc=${this.sxmc}`
+                        this.free = 0
+                        this.num = 1
+                        //window.location.href = `/v/mobile/user/main_order.html?ids=${this.goodsinfo.id}&num=1&free=0&sxmc=${this.sxmc}`
+                        $('#forms').submit();
                     }
                 }
             },

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0">
+    <title>积分集市-公告详情</title>
+    <link rel="stylesheet" href="/jfmobile/vant/index.css" />
+    <link rel="stylesheet" href="/jfmobile/css/normalize.css">
+    <link rel="stylesheet" href="/jfmobile/css/global.css">
+    <link rel="stylesheet" href="/jfmobile/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/jfmobile/css/main_help.css">
+
+    <script src="/jfmobile/js/flexible.js"></script>
+</head>
+<body>
+    <div id="app" class="layout-default layout-default-fixed" style="display: none;" :style="{display: 'block'}">
+        <div v-if="loading" class="page-loading">
+            <div class="page-loading__tip">
+                <van-loading color="#fff" size="34"></van-loading>
+                <p>内容加载中...</p>
+            </div>
+        </div>
+
+        <div class="nav-bar-fixed">
+            <van-nav-bar class="nav-bar-default" :title="title" left-arrow @click-left="onClickLeft" ref="navBar" />
+        </div>
+
+        <div class="help-detail">
+            <h3>{{ newDetail.title }}</h3>
+            <div class="help-info" v-html="newDetail.nr"></div>
+        </div>
+    </div>
+
+    <script src="/jfmobile/js/vue.min.js"></script>
+    <script src="/jfmobile/vant/vant.min.js"></script>
+    <script src="/jfmobile/js/jquery.js"></script>
+    <script src="/jfmobile/js/utils.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    loading: true,
+                    title: '公告详情',
+                    newDetail: {}
+                }
+            },
+            methods: {
+                //返回上一页
+                onClickLeft() {
+                    window.history.go(-1);
+                }
+            },
+            created() {
+                var self = this
+                $.ajax({
+                    type: "post",
+                    url: ajaxBaseUrl + "main/news",
+                    data: {
+                        id: getUrlParam().id,
+                        request_data: 1
+                    },
+                    success: function (res) {
+                        if (res.code === 1) {
+                            self.newDetail = res.data
+                            self.loading = false
+                        }
+                    }
+                })
+            },
+        })
+    </script>
+</body>
+</html>

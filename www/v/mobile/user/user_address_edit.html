@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0">
+    <title>积分集市-收货地址</title>
+    <link rel="stylesheet" href="/jfmobile/vant/index.css" />
+    <link rel="stylesheet" href="/jfmobile/css/normalize.css">
+    <link rel="stylesheet" href="/jfmobile/css/global.css">
+    <link rel="stylesheet" href="/jfmobile/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/jfmobile/css/main_address.css">
+
+    <script src="/jfmobile/js/flexible.js"></script>
+</head>
+
+<body>
+    <div id="app" class="layout-default" style="display: none;" :style="{display: 'block'}">
+        <div>
+            <van-nav-bar class="nav-bar-default" :title="title" left-arrow @click-left="onClickLeft" ref="navBar" />
+        </div>
+
+        <van-address-edit :area-list="areaList" show-postal :show-delete="showDelete" :show-set-default="showDefault"
+            :area-columns-placeholder="['请选择', '请选择', '请选择']" :address-info="AddressInfo" @save="onSave" @delete="onDelete" @change-default="onChangeDefault"></van-address-edit>
+
+    </div>
+
+    <script src="/jfmobile/js/vue.min.js"></script>
+    <script src="/jfmobile/vant/vant.min.js"></script>
+    <script src="/jfmobile/js/jquery.js"></script>
+    <script src="/jfmobile/js/area.js"></script>
+    <script src="/jfmobile/js/utils.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    title: "添加地址",
+                    areaList: areaList,
+                    //收货人信息初始值
+                    AddressInfo: {},
+                    showDefault: true,
+                    showDelete: false,
+                    id: ''
+                }
+            },
+            methods: {
+                //返回上一页
+                onClickLeft() {
+                    window.history.go(-1);
+                },
+                //新增、编辑地址
+                onSave(content) {
+                    let {
+                        name: zsxm,
+                        tel: sj,
+                        province: sheng,
+                        city: shi,
+                        county: qu,
+                        addressDetail: address,
+                        postalCode: yb
+                    } = content;
+
+                    let params = {
+                        zsxm,
+                        sj,
+                        sheng,
+                        shi,
+                        qu,
+                        address,
+                        yb,
+                        id: this.id
+                    };
+
+                    var self = this;
+                    $.ajax({
+                        type: "post",
+                        url: ajaxBaseUrl + "user_jf/edit_address",
+                        data: params,
+                        headers: {
+                            "X-Requested-With": "xmlhttprequest"
+                        },
+                        success: function (res) {
+                            if (res.code === 1) {
+                                self.$toast({
+                                    message: res.msg,
+                                    onClose: function () {
+                                        window.location.href = "/v/mobile/user/user_address.html";
+                                    }
+                                });
+                            } else {
+                                self.$toast(res.msg);
+                            }
+                        }
+                    })
+                },
+                //删除地址
+                onDelete(content) {
+                    var self = this;
+                    $.ajax({
+                        type: "post",
+                        url: ajaxBaseUrl + "user_jf/del_address",
+                        data: {
+                            id: content.id
+                        },
+                        headers: {
+                            "X-Requested-With": "xmlhttprequest"
+                        },
+                        success: function (res) {
+                            if (res.code === 1) {
+                                self.$toast({
+                                    message: res.msg,
+                                    onClose: function () {
+                                        window.location.href = "/v/mobile/user/user_address.html";
+                                    }
+                                });
+                            } else {
+                                self.$toast(res.msg);
+                            }
+                        }
+                    })
+                },
+                //是否设为默认地址
+                onChangeDefault(value) {
+                    console.log(value)
+                    var self = this;
+                    $.ajax({
+                        type: "post",
+                        url: ajaxBaseUrl + "user_jf/set_address_mr",
+                        data: {
+                            id: self.id
+                        },
+                        headers: {
+                            "X-Requested-With": "xmlhttprequest"
+                        },
+                        success: function (res) {
+                            if (res.code === 1) {
+                                //self.$toast(res.msg);
+                            } else {
+                                self.$toast(res.msg);
+                            }
+                        }
+                    })
+                }
+            },
+            created() {
+                let id = getUrlParam().id;
+                //修改地址逻辑
+                if (id) {
+                    this.title = "修改地址";
+                    this.showDelete = true;
+                    this.id = id;
+
+                    //获取地址详情数据回显到表单
+                    var self = this;
+                    $.ajax({
+                        type: "post",
+                        url: ajaxBaseUrl + "user_jf/p_address_info",
+                        data: {
+                            id
+                        },
+                        headers: {
+                            "X-Requested-With": "xmlhttprequest"
+                        },
+                        success: function (res) {
+                            if (res.code === 1) {
+                                let {
+                                    data: addressInfo
+                                } = res
+
+                                if(addressInfo.isdefault == "1") {
+                                    self.showDefault = false;
+                                }
+
+                                let countyObject = Object.entries(areaList.county_list);
+                                let areaCode = "";
+                                for (let i = 0; i < countyObject.length; i++) {
+                                    if (countyObject[i][1] === addressInfo.qu) {
+                                        areaCode = countyObject[i][0];
+                                    }
+                                }
+
+                                self.AddressInfo = {
+                                    id: addressInfo.id,
+                                    name: addressInfo.zsxm,
+                                    tel: addressInfo.sj,
+                                    province: addressInfo.sheng,
+                                    city: addressInfo.shi,
+                                    country: addressInfo.qu,
+                                    areaCode: areaCode,
+                                    postalCode: addressInfo.yb,
+                                    addressDetail: addressInfo.address,
+                                    isDefault: addressInfo.isdefault != "1" ? false : true
+                                };
+                            }
+                        }
+                    })
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

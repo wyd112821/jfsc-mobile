@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0">
+    <title>积分集市-用户中心</title>
+    <link rel="stylesheet" href="/jfmobile/vant/index.css" />
+    <link rel="stylesheet" href="/jfmobile/css/normalize.css">
+    <link rel="stylesheet" href="/jfmobile/css/global.css">
+    <link rel="stylesheet" href="/jfmobile/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/jfmobile/css/jf_index.css">
+
+    <script src="/jfmobile/js/flexible.js"></script>
+</head>
+
+<body>
+    <div id="app" class="layout-default layout-default-fixed" style="display: none;" :style="{display: 'block'}">
+        <div class="nav-bar-fixed">
+            <van-nav-bar class="nav-bar-default" :title="title" left-arrow @click-left="onClickLeft" ref="navBar" />
+        </div>
+
+        <van-cell-group class="user-cell-group">
+            <van-cell title="会员ID" value="137834"></van-cell>
+            <van-cell title="我的积分" value="405"></van-cell>
+            <van-cell title="地址管理" is-link url="/v/mobile/user/user_address.html?switchable=0"></van-cell>
+        </van-cell-group>
+
+        <van-cell-group class="user-cell-group">
+            <van-cell value="我的订单" label="描述信息" is-link url="/v/mobile/user/jf_order.html"></van-cell>
+            <div class="order-wrap">
+                <div class="order-item" @click="goOrder(1)">
+                    <van-icon class-prefix="iconfont iconSJtubiao-22" name="unhandle" badge="9"></van-icon>
+                    <span>未处理</span>
+                </div>
+                <div class="order-item" @click="goOrder(2)">
+                    <van-icon class-prefix="iconfont iconSJtubiao-21" name="handled"></van-icon>
+                    <span>已处理</span>
+                </div>
+                <div class="order-item" @click="goOrder(0)">
+                    <van-icon class-prefix="iconfont iconSJtubiao-20" name="all"></van-icon>
+                    <span>全部订单</span>
+                </div>
+            </div>
+        </van-cell-group>
+
+        <van-cell-group class="user-cell-group">
+            <van-cell title="消息通知" is-link url="/"></van-cell>
+            <van-cell title="积分明细" is-link url="/"></van-cell>
+            <van-cell title="集市公告" is-link url="/v/mobile/user/news.html"></van-cell>
+        </van-cell-group>
+
+        <div class="layout-menu-bar">
+            <van-tabbar v-model="menuActive" class="menu-bar" ref="menuBar">
+                <van-tabbar-item name="index" url="/">
+                    <span>首页</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-06"></i>
+                    </template>
+                </van-tabbar-item>
+                <van-tabbar-item name="goods" url="/goods">
+                    <span>分类</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-05"></i>
+                    </template>
+                </van-tabbar-item>
+                <van-tabbar-item name="cart" url="/user_jf/cart">
+                    <span>购物车</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-07"></i>
+                    </template>
+                </van-tabbar-item>
+                <van-tabbar-item name="user_jf" url="/user_jf">
+                    <span>我的</span>
+                    <template #icon="props">
+                        <i class="iconfont icontubiao-08"></i>
+                    </template>
+                </van-tabbar-item>
+            </van-tabbar>
+        </div>
+    </div>
+
+    <script src="/jfmobile/js/vue.min.js"></script>
+    <script src="/jfmobile/vant/vant.min.js"></script>
+    <script src="/jfmobile/js/jquery.js"></script>
+    <script src="/jfmobile/js/utils.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    title: '个人中心',
+                    menuActive: "user_jf"
+                }
+            },
+            methods: {
+                //返回上一页
+                onClickLeft() {
+                    window.history.go(-1);
+                },
+                goOrder(id) {
+                    window.location.href = "/v/mobile/user/jf_order.html?cur=" + id
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>

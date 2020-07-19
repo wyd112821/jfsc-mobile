@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=0">
+    <title>积分集市-消息通知</title>
+    <link rel="stylesheet" href="/jfmobile/vant/index.css" />
+    <link rel="stylesheet" href="/jfmobile/css/normalize.css">
+    <link rel="stylesheet" href="/jfmobile/css/global.css">
+    <link rel="stylesheet" href="/jfmobile/iconfont/iconfont.css">
+    <link rel="stylesheet" href="/jfmobile/css/jf_index.css">
+
+    <script src="/jfmobile/js/flexible.js"></script>
+</head>
+
+<body>
+    <div id="app" class="layout-default" style="display: none;" :style="{display: 'block'}">
+
+        <div>
+            <van-nav-bar class="nav-bar-default" :title="title" left-arrow @click-left="onClickLeft" ref="navBar" />
+        </div>
+
+        <van-tabs class="order-wrapper message-wrapper" v-model="active" @click="onClickTabs" sticky>
+            <van-tab title="全部消息" name="0">
+                <div class="order-list">
+                    <van-list v-model="list[0].loading" :finished="list[0].finished" :immediate-check="false"
+                        finished-text="没有更多了" @load="onLoad(0)" v-if="!this.list[0].empty">
+                        <div class="message-wrap">
+                            <div class="message-item" v-for="(item, idx) in list[0].items" :key="idx">
+                                <div class="message-left">
+                                    <van-checkbox :name="item.id" v-model="item.isChecked"
+                                        @click="chooseChange(item.id, item)" shape="square"></van-checkbox>
+                                </div>
+                                <div class="message-right">
+                                    <h3 :class="item.zt == 2 ? 'readed' : ''">{{ item.title }}</h3>
+                                    <div class="message-desc">
+                                        <div class="desc">{{ item.bz }}</div>
+                                        <div class="btn" @click="collapseMessage($event, item.zt, item.id)">
+                                            <div class="zk">
+                                                展开<van-icon name="arrow-down"></van-icon>
+                                            </div>
+                                            <div class="sq">
+                                                收起<van-icon name="arrow-up"></van-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="message-info">
+                                        <span class="time">时间：{{ item.tjsj|timestampToTime }}</span>
+                                        <span class="del" @click="onDelMessage(item.id)">删除</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </van-list>
+                    <van-empty description="暂无消息~" v-if="this.list[0].empty" />
+                </div>
+            </van-tab>
+
+            <van-tab title="已读" name="1">
+                <div class="order-list">
+                    <van-list v-model="list[1].loading" :finished="list[1].finished" :immediate-check="false"
+                        finished-text="没有更多了" @load="onLoad(1)" v-if="!this.list[1].empty">
+                        <div class="message-wrap">
+                            <div class="message-item" v-for="(item, idx) in list[1].items" :key="idx">
+                                <div class="message-left">
+                                    <van-checkbox :name="item.id" v-model="item.isChecked"
+                                        @click="chooseChange(item.id, item)" shape="square"></van-checkbox>
+                                </div>
+                                <div class="message-right">
+                                    <h3 class="readed">{{ item.title }}</h3>
+                                    <div class="message-desc">
+                                        <div class="desc">{{ item.bz }}</div>
+                                        <div class="btn" @click="collapseMessage($event, item.zt, item.id)">
+                                            <div class="zk">
+                                                展开<van-icon name="arrow-down"></van-icon>
+                                            </div>
+                                            <div class="sq">
+                                                收起<van-icon name="arrow-up"></van-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="message-info">
+                                        <span class="time">时间：{{ item.tjsj|timestampToTime }}</span>
+                                        <span class="del">删除</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </van-list>
+                    <van-empty description="暂无已读消息~" v-if="this.list[1].empty" />
+                </div>
+            </van-tab>
+
+            <van-tab title="未读" name="2">
+                <div class="order-list">
+                    <van-list v-model="list[2].loading" :finished="list[2].finished" :immediate-check="false"
+                        finished-text="没有更多了" @load="onLoad(2)" v-if="!this.list[2].empty">
+                        <div class="message-wrap">
+                            <div class="message-item" v-for="(item, idx) in list[2].items" :key="idx">
+                                <div class="message-left">
+                                    <van-checkbox :name="item.id" v-model="item.isChecked"
+                                        @click="chooseChange(item.id, item)" shape="square"></van-checkbox>
+                                </div>
+                                <div class="message-right">
+                                    <h3 :class="item.zt == 2 ? 'readed' : ''">{{ item.title }}</h3>
+                                    <div class="message-desc">
+                                        <div class="desc">{{ item.bz }}</div>
+                                        <div class="btn" @click="collapseMessage($event, item.zt, item.id)">
+                                            <div class="zk">
+                                                展开<van-icon name="arrow-down"></van-icon>
+                                            </div>
+                                            <div class="sq">
+                                                收起<van-icon name="arrow-up"></van-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="message-info">
+                                        <span class="time">时间：{{ item.tjsj|timestampToTime }}</span>
+                                        <span class="del">删除</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </van-list>
+                    <van-empty description="暂无未读消息~" v-if="this.list[2].empty" />
+                </div>
+            </van-tab>
+        </van-tabs>
+
+        <van-submit-bar button-text="批量操作" @submit="onSubmit" class="submit-bar-wrap">
+            <template #default>
+                <van-checkbox v-model="allchecked" @click="checkAll" shape="square">全选（已选{{ selectedData.length }}个）
+                </van-checkbox>
+            </template>
+        </van-submit-bar>
+
+        <van-popup v-model="showPicker" position="bottom">
+            <van-picker show-toolbar :columns="columns" :visible-item-count="4" @cancel="showPicker = false"
+                @confirm="onConfirm"></van-picker>
+        </van-popup>
+    </div>
+
+    <script src="/jfmobile/js/vue.min.js"></script>
+    <script src="/jfmobile/vant/vant.min.js"></script>
+    <script src="/jfmobile/js/jquery.js"></script>
+    <script src="/jfmobile/js/utils.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    title: '消息通知',
+                    active: 0,
+                    allchecked: false,
+                    selectedData: [],
+                    showPicker: false,
+                    columns: ['标记已读', '删除选中'],
+                    list: [{
+                            items: [],
+                            loading: false,
+                            finished: false,
+                            empty: false,
+                            data: { //全部消息
+                                page: 1,
+                                pageSize: 9
+                            }
+                        },
+                        {
+                            items: [],
+                            loading: false,
+                            finished: false,
+                            empty: false,
+                            data: {
+                                zt: 2, //已读
+                                page: 1,
+                                pageSize: 9
+                            }
+                        },
+                        {
+                            items: [],
+                            loading: false,
+                            finished: false,
+                            empty: false,
+                            data: {
+                                zt: 1, //未读
+                                page: 1,
+                                pageSize: 9
+                            }
+                        }
+                    ]
+                }
+            },
+            filters: {
+                timestampToTime: function (timestamp) {
+                    var date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+                    var Y = date.getFullYear() + '-';
+                    var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() +
+                        1) + '-';
+                    var D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' ';
+                    var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+                    var m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) +
+                        ':';
+                    var s = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+                    return Y + M + D + h + m + s;
+                }
+            },
+            methods: {
+                //返回上一页
+                onClickLeft() {
+                    window.history.go(-1);
+                },
+                //tabs切换监听
+                onClickTabs(name) {
+                    this.list[name].items = [];
+                    this.list[name].finished = false;
+                    this.list[name].loading = true;
+                    this.list[name].data.page = 1;
+                    this.onLoad(name);
+                },
+                onLoad(index) {
+                    var self = this;
+                    const list = self.list[index];
+                    list.loading = true;
+                    // 异步更新数据
+                    $.ajax({
+                        type: "post",
+                        url: ajaxBaseUrl + "user_jf/p_message_list",
+                        data: list.data,
+                        headers: {
+                            "X-Requested-With": "xmlhttprequest"
+                        },
+                        success: function (res) {
+                            if (res.code === 1) {
+                                let dataLength = res.data.count;
+                                let dataInfo = res.data.data;
+                                if (dataInfo.length === 0) {
+                                    list.empty = true;
+                                }
+                                for (let i = 0; i < dataInfo.length; i++) {
+                                    dataInfo[i].isChecked = false;
+                                    list.items.push(dataInfo[i]);
+                                }
+                                // 加载状态结束
+                                list.loading = false;
+                                list.data.page++;
+                                // 数据全部加载完成
+                                if (list.items.length >= dataLength) {
+                                    list.finished = true;
+                                }
+                                //清空选中数据
+                                self.selectedData = [];
+                                self.allchecked = false;
+                            }
+                        }
+                    })
+                },
+                collapseMessage(e, zt, id) {
+                    //折叠交互
+                    let $btnItem = $(e.currentTarget);
+                    if ($btnItem.hasClass('readed')) {
+                        $btnItem.removeClass('readed');
+                        $btnItem.prev().css("height", 0);
+                    } else {
+                        $btnItem.addClass('readed');
+                        $btnItem.prev().css("height", "auto");
+                        //标为已读
+                        if (zt == 1) {
+                            $.ajax({
+                                url: ajaxBaseUrl + 'user_jf/p_yd_message',
+                                type: 'post',
+                                data: {
+                                    id: id
+                                },
+                                success: function (res) {
+                                    if (res.code == 1) {
+                                        $btnItem.parent().prev().addClass('readed');
+                                    }
+                                }
+                            })
+                        }
+                    }
+                },
+                //删除信息
+                onDelMessage(id) {
+                    this.$dialog.confirm({
+                            message: '确认删除该条消息？',
+                        })
+                        .then(() => {
+                            var self = this;
+                            $.ajax({
+                                url: ajaxBaseUrl + 'user_jf/p_del_message',
+                                type: 'post',
+                                data: {
+                                    id: id
+                                },
+                                success: function (res) {
+                                    if (res.code == 1) {
+                                        self.$toast(res.msg);
+                                        window.location.reload();
+                                    } else {
+                                        self.$toast(res.msg);
+                                    }
+                                }
+                            })
+                        })
+                        .catch(() => {
+
+                        });
+                },
+                // 单选的change事件
+                chooseChange(i, item) {
+                    if (this.selectedData.indexOf(i) > -1) {
+                        var arrs = this.selectedData.filter(function (item) {
+                            return item != i;
+                        });
+                        this.selectedData = arrs;
+                        item.isChecked = false;
+                    } else {
+                        this.selectedData.push(i);
+                        item.isChecked = true;
+                    }
+                    if (this.selectedData.length < this.list[this.active].items.length) {
+                        this.allchecked = false;
+                    } else {
+                        this.allchecked = true;
+                    }
+                },
+                // 全选
+                checkAll() {
+                    let list = this.list[this.active].items;
+                    console.log(list)
+                    if (this.allchecked) {
+                        list.forEach(element => {
+                            element.isChecked = true;
+                            if (this.selectedData.indexOf(element.id) < 0) {
+                                this.selectedData.push(element.id);
+                            }
+                        });
+                    } else {
+                        list.forEach(element => {
+                            element.isChecked = false;
+                        });
+                        this.selectedData = [];
+                    }
+                },
+                //批量操作
+                onSubmit() {
+                    if(this.selectedData.length) {
+                        this.showPicker = true
+                    } else {
+                        this.$toast("请选择消息哦");
+                    }
+                },
+                //批量删除、已读
+                onConfirm(value) {
+                    var self = this;
+                    this.showPicker = false;
+                    let ids = self.selectedData.join(',')
+                    if (value == "标记已读") {
+                        $.ajax({
+                            url: ajaxBaseUrl + 'user_jf/p_yd_message',
+                            type: 'post',
+                            data: {
+                                id: ids
+                            },
+                            success: function (res) {
+                                if (res.code == 1) {
+                                    window.location.reload();
+                                } else {
+                                    self.$toast(res.msg);
+                                }
+                            }
+                        })
+                    }
+                    if (value == "删除选中") {
+                        this.$dialog.confirm({
+                                message: '确认删除选中消息？',
+                            })
+                            .then(() => {
+                                $.ajax({
+                                    url: ajaxBaseUrl + 'user_jf/p_del_message',
+                                    type: 'post',
+                                    data: {
+                                        id: ids
+                                    },
+                                    success: function (res) {
+                                        if (res.code == 1) {
+                                            self.$toast(res.msg);
+                                            window.location.reload();
+                                        } else {
+                                            self.$toast(res.msg);
+                                        }
+                                    }
+                                })
+                            })
+                            .catch(() => {
+
+                            });
+                    }
+                }
+            },
+            mounted() {
+                this.onLoad(0);
+            },
+        })
+    </script>
+</body>
+
+</html>

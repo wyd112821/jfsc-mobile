@@ -217,22 +217,22 @@
                     });
 
                     let ids = ''
-                    let num = ''
-                    let sxmc = ''
+                    let nums = ''
+                    let sxmcs = ''
                     cartLists.forEach(item => {
                         ids += item.id + ','
-                        num += item.num + ','
-                        sxmc += item.sxmc + ','
+                        nums += item.num + ','
+                        sxmcs += item.sxmc + ','
                     })
-                    this.forms.ids = ids;
-                    this.forms.num = num;
-                    this.forms.sxmc = sxmc;
+                    this.forms.ids = ids.substring(0, ids.length - 1);
+                    this.forms.num = nums.substring(0, nums.length - 1);
+                    this.forms.sxmc = sxmcs.substring(0, sxmcs.length - 1);
 
                     if (cartLists.length === 0) {
                         this.$toast("请选择商品购买");
                     } else {
                         console.log(this.forms)
-                        //$('#forms').submit();
+                        $('#forms').submit();
                     }
                 }
             },

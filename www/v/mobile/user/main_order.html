@@ -15,7 +15,7 @@
 </head>
 
 <body>
-    <div id="app" class="layout-default" style="display: none;" :style="{display: 'block'}">
+    <div id="app" class="layout-default layout-default-fixed" style="display: none;" :style="{display: 'block'}">
         <div v-if="loading" class="page-loading">
             <div class="page-loading__tip">
                 <van-loading color="#fff" size="34"></van-loading>
@@ -23,15 +23,15 @@
             </div>
         </div>
 
-        <div>
+        <div class="nav-bar-fixed">
             <van-nav-bar class="nav-bar-default" :title="title" left-arrow @click-left="onClickLeft" ref="navBar" />
         </div>
 
         <div>
             <van-cell title="添加收货地址" icon="location-o" is-link class="exchange-cell" v-if="!default_address"
-                url="/address"></van-cell>
+                url="/v/mobile/user/user_address_edit.html"></van-cell>
             <van-cell icon="location-o" is-link class="exchange-cell" :label="default_address.address"
-                url="/addressList" v-else>
+                :url="'/v/mobile/user/user_address.html?address_id=' + default_address.id" v-else>
                 <template #title>
                     <span class="exchange-name">{{ default_address.zsxm }}</span>
                     <span class="exchange-tel">{{ default_address.sj }}</span>
@@ -229,6 +229,7 @@
                 var self = this;
                 let data = getUrlParam()
                 data.request_data = 1
+                //获取下单信息
                 $.ajax({
                     type: "get",
                     url: ajaxBaseUrl + "user_jf/order",
@@ -254,6 +255,33 @@
                         self.$toast('网络错误');
                     }
                 });
+
+                let address_id = getUrlParam().address_id
+                if(address_id) {
+                    //获取地址详细信息
+                    $.ajax({
+                        type: "post",
+                        url: ajaxBaseUrl + "user_jf/p_address_info",
+                        data: {
+                            id: address_id
+                        },
+                        headers: {
+                            "X-Requested-With": "xmlhttprequest"
+                        },
+                        success: function (res) {
+                            if (res.code === 1) {
+                                let {
+                                    data: addressInfo
+                                } = res
+
+                                self.default_address = addressInfo
+                            }
+                        },
+                        error: function () {
+                            self.$toast('网络错误');
+                        }
+                    });
+                }
             }
         })
     </script>
